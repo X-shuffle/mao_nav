@@ -181,20 +181,6 @@ export const mockData = {
       ]
     },
     {
-      "id": "design",
-      "name": "设计工具",
-      "icon": "🎨",
-      "order": 5,
-      "sites": []
-    },
-    {
-      "id": "finance",
-      "name": "财经投资",
-      "icon": "💰",
-      "order": 6,
-      "sites": []
-    },
-    {
       "id": "learning",
       "name": "学习资源",
       "icon": "📚",
@@ -259,13 +245,6 @@ export const mockData = {
           "icon": "/sitelogo/www.youtube.com.ico"
         }
       ]
-    },
-    {
-      "id": "office",
-      "name": "办公协作",
-      "icon": "💼",
-      "order": 10,
-      "sites": []
     }
   ],
   "title": "猫猫导航"
