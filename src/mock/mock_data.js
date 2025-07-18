@@ -97,6 +97,13 @@ export const mockData = {
           "url": "https://smithery.ai/",
           "description": "",
           "icon": "/sitelogo/smithery.ai.ico"
+        },
+        {
+          "id": "site-1752860319244",
+          "name": "inference",
+          "url": "https://inference.net",
+          "description": "",
+          "icon": ""
         }
       ]
     },
