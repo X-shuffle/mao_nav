@@ -90,6 +90,13 @@ export const mockData = {
           "url": "https://deepask.cc/",
           "description": "",
           "icon": "/sitelogo/deepask.cc.ico"
+        },
+        {
+          "id": "site-1752860219978",
+          "name": "mcp",
+          "url": "https://smithery.ai/",
+          "description": "",
+          "icon": "/sitelogo/smithery.ai.ico"
         }
       ]
     },
@@ -133,6 +140,13 @@ export const mockData = {
           "url": "https://www.pasyun.com/",
           "description": "ipv6机器",
           "icon": "/sitelogo/www.pasyun.com.ico"
+        },
+        {
+          "id": "site-1752860165512",
+          "name": "六一☁️",
+          "url": "https://www.now61.com",
+          "description": "",
+          "icon": "/sitelogo/www.now61.com.ico"
         }
       ]
     },
