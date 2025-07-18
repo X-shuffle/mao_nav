@@ -284,6 +284,13 @@ export const mockData = {
           "url": "https://ping0.cc/",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1752861094606",
+          "name": "ip 全面查询",
+          "url": "https://iplark.com/",
+          "description": "",
+          "icon": "/sitelogo/iplark.com.ico"
         }
       ]
     },
