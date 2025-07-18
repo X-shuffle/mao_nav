@@ -39,7 +39,7 @@ export const mockData = {
           "name": "xshuffle_blog",
           "url": "https://xu-ux.eu.org/",
           "description": "",
-          "icon": ""
+          "icon": "/sitelogo/xueqiu.com.ico"
         }
       ]
     },
