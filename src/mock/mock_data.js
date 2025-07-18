@@ -14,13 +14,6 @@ export const mockData = {
           "icon": "/sitelogo/linux.do.ico"
         },
         {
-          "id": "site-1752649007053",
-          "name": "BeJson",
-          "url": "https://www.bejson.com/",
-          "description": "工具大全",
-          "icon": "/sitelogo/www.bejson.com.ico"
-        },
-        {
           "id": "github",
           "name": "GitHub",
           "url": "https://github.com",
@@ -40,6 +33,13 @@ export const mockData = {
           "url": "https://xu-ux.eu.org/",
           "description": "",
           "icon": "/sitelogo/xueqiu.com.ico"
+        },
+        {
+          "id": "site-1752649007053",
+          "name": "BeJson",
+          "url": "https://www.bejson.com/jsoneditoronline/",
+          "description": "工具大全",
+          "icon": "/sitelogo/www.bejson.com.ico"
         }
       ]
     },
