@@ -143,25 +143,18 @@ export const mockData = {
       "order": 3,
       "sites": [
         {
-          "id": "github",
-          "name": "GitHub",
-          "url": "https://github.com",
-          "description": "代码托管平台",
-          "icon": "/sitelogo/github.com.ico"
-        },
-        {
-          "id": "vscode",
-          "name": "VS Code",
-          "url": "https://code.visualstudio.com",
-          "description": "代码编辑器",
-          "icon": "/sitelogo/code.visualstudio.com.ico"
-        },
-        {
           "id": "postman",
           "name": "Postman",
           "url": "https://www.postman.com",
           "description": "API测试工具",
           "icon": "/sitelogo/www.postman.com.ico"
+        },
+        {
+          "id": "site-1752860019362",
+          "name": "在线免费图床",
+          "url": "https://sm.ms/",
+          "description": "",
+          "icon": "/sitelogo/sm.ms.ico"
         }
       ]
     },
@@ -206,6 +199,13 @@ export const mockData = {
           "url": "https://www.coursera.org",
           "description": "在线课程平台",
           "icon": "/sitelogo/www.coursera.org.ico"
+        },
+        {
+          "id": "site-1752859927897",
+          "name": "架构设计",
+          "url": "https://www.sweetcodey.com/",
+          "description": "国外学习网站",
+          "icon": ""
         }
       ]
     },
@@ -228,6 +228,13 @@ export const mockData = {
           "url": "https://caniuse.com",
           "description": "浏览器兼容性查询",
           "icon": "/sitelogo/caniuse.com.ico"
+        },
+        {
+          "id": "site-1752859839812",
+          "name": "查看本机代理 ip",
+          "url": "https://ping0.cc/",
+          "description": "",
+          "icon": ""
         }
       ]
     },
@@ -250,6 +257,13 @@ export const mockData = {
           "url": "https://www.youtube.com",
           "description": "视频分享平台",
           "icon": "/sitelogo/www.youtube.com.ico"
+        },
+        {
+          "id": "site-1752859972597",
+          "name": "gying",
+          "url": "https://www.gying.in/",
+          "description": "观影",
+          "icon": ""
         }
       ]
     }
