@@ -155,6 +155,13 @@ export const mockData = {
           "url": "https://sm.ms/",
           "description": "",
           "icon": "/sitelogo/sm.ms.ico"
+        },
+        {
+          "id": "site-1752860065695",
+          "name": "jsondiff",
+          "url": "https://jsoneditoronline.org/#left=local.pasebi&right=local.wajowi",
+          "description": "",
+          "icon": "/sitelogo/jsoneditoronline.org.ico"
         }
       ]
     },
@@ -206,6 +213,13 @@ export const mockData = {
           "url": "https://www.sweetcodey.com/",
           "description": "国外学习网站",
           "icon": ""
+        },
+        {
+          "id": "site-1752860102378",
+          "name": "如何提问",
+          "url": "https://github.com/tvvocold/How-To-Ask-Questions-The-Smart-Way",
+          "description": "",
+          "icon": "/sitelogo/github.com.ico"
         }
       ]
     },
