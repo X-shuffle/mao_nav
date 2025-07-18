@@ -40,6 +40,13 @@ export const mockData = {
           "url": "https://www.bejson.com/jsoneditoronline/",
           "description": "工具大全",
           "icon": "/sitelogo/www.bejson.com.ico"
+        },
+        {
+          "id": "site-1752860760373",
+          "name": "服务器监控",
+          "url": "http://35.209.107.252:8090/",
+          "description": "",
+          "icon": ""
         }
       ]
     },
@@ -78,20 +85,6 @@ export const mockData = {
           "icon": "/sitelogo/cursor.sh.ico"
         },
         {
-          "id": "site-1752853037391",
-          "name": "you.ai",
-          "url": "https://you.com/?chatMode=custom",
-          "description": "x-shuffle@linux.do",
-          "icon": "/sitelogo/you.com.ico"
-        },
-        {
-          "id": "site-1752853067342",
-          "name": "deepask",
-          "url": "https://deepask.cc/",
-          "description": "",
-          "icon": "/sitelogo/deepask.cc.ico"
-        },
-        {
           "id": "site-1752860219978",
           "name": "mcp",
           "url": "https://smithery.ai/",
@@ -104,6 +97,20 @@ export const mockData = {
           "url": "https://inference.net",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1752853037391",
+          "name": "you.ai",
+          "url": "https://you.com/?chatMode=custom",
+          "description": "x-shuffle@linux.do",
+          "icon": "/sitelogo/you.com.ico"
+        },
+        {
+          "id": "site-1752853067342",
+          "name": "deepask",
+          "url": "https://deepask.cc/",
+          "description": "",
+          "icon": "/sitelogo/deepask.cc.ico"
         }
       ]
     },
@@ -154,6 +161,13 @@ export const mockData = {
           "url": "https://www.now61.com",
           "description": "",
           "icon": "/sitelogo/www.now61.com.ico"
+        },
+        {
+          "id": "site-1752860845189",
+          "name": "racknerd",
+          "url": "https://racknerd.com/",
+          "description": "",
+          "icon": "/sitelogo/racknerd.com.ico"
         }
       ]
     },
