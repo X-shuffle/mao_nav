@@ -78,18 +78,18 @@ export const mockData = {
           "icon": "/sitelogo/cursor.sh.ico"
         },
         {
-          "id": "site-1752853067342",
-          "name": "deepask",
-          "url": "https://deepask.cc/",
-          "description": "",
-          "icon": "/sitelogo/deepask.cc.ico"
-        },
-        {
           "id": "site-1752853037391",
           "name": "you.ai",
           "url": "https://you.com/?chatMode=custom",
           "description": "x-shuffle@linux.do",
           "icon": "/sitelogo/you.com.ico"
+        },
+        {
+          "id": "site-1752853067342",
+          "name": "deepask",
+          "url": "https://deepask.cc/",
+          "description": "",
+          "icon": "/sitelogo/deepask.cc.ico"
         }
       ]
     },
