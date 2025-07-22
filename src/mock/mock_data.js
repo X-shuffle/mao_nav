@@ -26,6 +26,13 @@ export const mockData = {
           "url": "http://35.209.107.252:8090/",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1753176738684",
+          "name": "augment 代理",
+          "url": "https://augment.caicode.org/dash",
+          "description": "augment 代理",
+          "icon": ""
         }
       ]
     },
@@ -190,6 +197,13 @@ export const mockData = {
           "url": "https://www.bejson.com/jsoneditoronline/",
           "description": "工具大全",
           "icon": "/sitelogo/www.bejson.com.ico"
+        },
+        {
+          "id": "site-1753176504937",
+          "name": "moemail",
+          "url": "https://qqemail.eu.org/",
+          "description": "临时邮箱",
+          "icon": "/sitelogo/qqemail.eu.org.ico"
         }
       ]
     },
