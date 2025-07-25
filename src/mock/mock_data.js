@@ -97,6 +97,13 @@ export const mockData = {
           "url": "https://deepask.cc/",
           "description": "",
           "icon": "/sitelogo/deepask.cc.ico"
+        },
+        {
+          "id": "site-1753468248931",
+          "name": "uniapi",
+          "url": "https://uniapi.ai/",
+          "description": "自用的充钱第三方 模型 集合",
+          "icon": "/sitelogo/uniapi.ai.ico"
         }
       ]
     },
