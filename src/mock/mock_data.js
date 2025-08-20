@@ -211,6 +211,13 @@ export const mockData = {
           "url": "https://qqemail.eu.org/",
           "description": "临时邮箱",
           "icon": "/sitelogo/qqemail.eu.org.ico"
+        },
+        {
+          "id": "site-1755666303853",
+          "name": "网站秒变APP",
+          "url": "https://blackace.app/",
+          "description": "输入网站URL，即可打包成一个安卓APP",
+          "icon": ""
         }
       ]
     },
@@ -354,6 +361,13 @@ export const mockData = {
           "name": "皮皮妖",
           "url": "https://www.pipiyao.cc/",
           "description": "在线观看适配，含枪版",
+          "icon": ""
+        },
+        {
+          "id": "site-1755666472353",
+          "name": "免费打字练习平台",
+          "url": "http://daziya.com/",
+          "description": "快速掌握打字指法与盲打技巧\n",
           "icon": ""
         }
       ]
