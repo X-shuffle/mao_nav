@@ -312,6 +312,13 @@ export const mockData = {
           "url": "https://www.bejson.com/transfor/json2go/",
           "description": "json 转化",
           "icon": "/sitelogo/www.bejson.com.ico"
+        },
+        {
+          "id": "site-1755666115988",
+          "name": "下载全网视频",
+          "url": "https://www.datatool.vip",
+          "description": "在线视频下载器",
+          "icon": ""
         }
       ]
     },
