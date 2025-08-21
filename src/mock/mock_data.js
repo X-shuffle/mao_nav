@@ -369,6 +369,20 @@ export const mockData = {
           "url": "http://daziya.com/",
           "description": "快速掌握打字指法与盲打技巧\n",
           "icon": ""
+        },
+        {
+          "id": "site-1755750358803",
+          "name": "桌游合集",
+          "url": "https://game.hullqin.cn/",
+          "description": "桌游合集",
+          "icon": ""
+        },
+        {
+          "id": "site-1755750578512",
+          "name": "手机当手柄",
+          "url": "https://www.airconsole.com/",
+          "description": "手机当手柄玩游戏",
+          "icon": ""
         }
       ]
     }
