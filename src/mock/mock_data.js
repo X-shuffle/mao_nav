@@ -364,13 +364,6 @@ export const mockData = {
           "icon": "/sitelogo/game.hullqin.cn.ico"
         },
         {
-          "id": "site-1755666472353",
-          "name": "免费打字练习平台",
-          "url": "http://daziya.com/",
-          "description": "快速掌握打字指法与盲打技巧\n",
-          "icon": "/sitelogo/daziya.com.ico"
-        },
-        {
           "id": "site-1752859972597",
           "name": "gying",
           "url": "https://www.gying.in/",
@@ -383,6 +376,13 @@ export const mockData = {
           "url": "https://www.pipiyao.cc/",
           "description": "在线观看适配，含枪版",
           "icon": "/sitelogo/www.pipiyao.cc.ico"
+        },
+        {
+          "id": "site-1755666472353",
+          "name": "免费打字练习平台",
+          "url": "http://daziya.com/",
+          "description": "快速掌握打字指法与盲打技巧\n",
+          "icon": "/sitelogo/daziya.com.ico"
         }
       ]
     },
