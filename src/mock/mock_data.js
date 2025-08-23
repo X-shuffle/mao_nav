@@ -264,18 +264,18 @@ export const mockData = {
           "icon": "/sitelogo/www.coursera.org.ico"
         },
         {
-          "id": "site-1752859927897",
-          "name": "架构设计",
-          "url": "https://www.sweetcodey.com/",
-          "description": "国外学习网站",
-          "icon": ""
-        },
-        {
           "id": "site-1752860102378",
           "name": "如何提问",
           "url": "https://github.com/tvvocold/How-To-Ask-Questions-The-Smart-Way",
           "description": "",
           "icon": "/sitelogo/github.com.ico"
+        },
+        {
+          "id": "site-1752859927897",
+          "name": "架构设计",
+          "url": "https://www.sweetcodey.com/",
+          "description": "国外学习网站",
+          "icon": "/sitelogo/www.sweetcodey.com.ico"
         }
       ]
     },
@@ -325,7 +325,7 @@ export const mockData = {
           "name": "下载全网视频",
           "url": "https://www.datatool.vip",
           "description": "在线视频下载器",
-          "icon": ""
+          "icon": "/sitelogo/www.datatool.vip.ico"
         }
       ]
     },
