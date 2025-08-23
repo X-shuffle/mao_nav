@@ -398,6 +398,13 @@ export const mockData = {
           "url": "https://sspai.com/post/91782",
           "description": "获取任意网站 icon 这件事并没那么简单",
           "icon": "/sitelogo/sspai.com.ico"
+        },
+        {
+          "id": "site-1755964285437",
+          "name": "逻辑学十九讲",
+          "url": "https://reader.z-library.sk/read/89f46124af3f5b526398d0190dcec3345c50c026f797b5e6df849cff9fcf045a/6185515/23a271/%E9%80%BB%E8%BE%91%E5%8D%81%E4%B9%9D%E8%AE%B2.html?client_key=1fFLi67gBrNRP1j1iPy1&extension=epub&signature=52df263696fe26ad71d05a93754f1c1f9d2b3837355b2df84449c6963752d9d5&download_location=https%3A%2F%2Fz-library.sk%2Fdl%2F6185515%2F729dd9",
+          "description": "",
+          "icon": "/sitelogo/reader.z-library.sk.ico"
         }
       ]
     }
