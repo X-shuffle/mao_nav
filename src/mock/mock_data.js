@@ -350,13 +350,6 @@ export const mockData = {
           "icon": "/sitelogo/www.youtube.com.ico"
         },
         {
-          "id": "site-1754797306499",
-          "name": "皮皮妖",
-          "url": "https://www.pipiyao.cc/",
-          "description": "在线观看适配，含枪版",
-          "icon": ""
-        },
-        {
           "id": "site-1755750578512",
           "name": "手机当手柄",
           "url": "https://www.airconsole.com/",
@@ -371,6 +364,13 @@ export const mockData = {
           "icon": "/sitelogo/game.hullqin.cn.ico"
         },
         {
+          "id": "site-1752859972597",
+          "name": "gying",
+          "url": "https://www.gying.in/",
+          "description": "观影",
+          "icon": "/sitelogo/www.gying.in.ico"
+        },
+        {
           "id": "site-1755666472353",
           "name": "免费打字练习平台",
           "url": "http://daziya.com/",
@@ -378,11 +378,11 @@ export const mockData = {
           "icon": "/sitelogo/daziya.com.ico"
         },
         {
-          "id": "site-1752859972597",
-          "name": "gying",
-          "url": "https://www.gying.in/",
-          "description": "观影",
-          "icon": "/sitelogo/www.gying.in.ico"
+          "id": "site-1754797306499",
+          "name": "皮皮妖",
+          "url": "https://www.pipiyao.cc/",
+          "description": "在线观看适配，含枪版",
+          "icon": "/sitelogo/www.pipiyao.cc.ico"
         }
       ]
     }
