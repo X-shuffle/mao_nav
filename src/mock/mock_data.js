@@ -78,13 +78,6 @@ export const mockData = {
           "icon": "/sitelogo/smithery.ai.ico"
         },
         {
-          "id": "site-1752860319244",
-          "name": "inference",
-          "url": "https://inference.net",
-          "description": "",
-          "icon": ""
-        },
-        {
           "id": "site-1752853037391",
           "name": "you.ai",
           "url": "https://you.com/?chatMode=custom",
@@ -104,6 +97,13 @@ export const mockData = {
           "url": "https://uniapi.ai/",
           "description": "自用的充钱第三方 模型 集合",
           "icon": "/sitelogo/uniapi.ai.ico"
+        },
+        {
+          "id": "site-1752860319244",
+          "name": "inference",
+          "url": "https://inference.net",
+          "description": "",
+          "icon": "/sitelogo/inference.net.ico"
         }
       ]
     },
@@ -350,13 +350,6 @@ export const mockData = {
           "icon": "/sitelogo/www.youtube.com.ico"
         },
         {
-          "id": "site-1752859972597",
-          "name": "gying",
-          "url": "https://www.gying.in/",
-          "description": "观影",
-          "icon": ""
-        },
-        {
           "id": "site-1754797306499",
           "name": "皮皮妖",
           "url": "https://www.pipiyao.cc/",
@@ -364,25 +357,32 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1755666472353",
-          "name": "免费打字练习平台",
-          "url": "http://daziya.com/",
-          "description": "快速掌握打字指法与盲打技巧\n",
-          "icon": ""
+          "id": "site-1755750578512",
+          "name": "手机当手柄",
+          "url": "https://www.airconsole.com/",
+          "description": "手机当手柄玩游戏",
+          "icon": "/sitelogo/www.airconsole.com.ico"
         },
         {
           "id": "site-1755750358803",
           "name": "桌游合集",
           "url": "https://game.hullqin.cn/",
           "description": "桌游合集",
-          "icon": ""
+          "icon": "/sitelogo/game.hullqin.cn.ico"
         },
         {
-          "id": "site-1755750578512",
-          "name": "手机当手柄",
-          "url": "https://www.airconsole.com/",
-          "description": "手机当手柄玩游戏",
-          "icon": ""
+          "id": "site-1755666472353",
+          "name": "免费打字练习平台",
+          "url": "http://daziya.com/",
+          "description": "快速掌握打字指法与盲打技巧\n",
+          "icon": "/sitelogo/daziya.com.ico"
+        },
+        {
+          "id": "site-1752859972597",
+          "name": "gying",
+          "url": "https://www.gying.in/",
+          "description": "观影",
+          "icon": "/sitelogo/www.gying.in.ico"
         }
       ]
     }
