@@ -327,27 +327,85 @@ const testImage = async (imageUrl) => {
   // 对于SVG文件，使用fetch检测
   if (imageUrl.toLowerCase().includes('.svg')) {
     console.log(`📄 SVG文件，使用fetch检测: ${imageUrl}`)
-    try {
-      const response = await fetch(imageUrl, { 
-        method: 'HEAD',
-        mode: 'cors',
-        credentials: 'omit'
-      })
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: 无法访问SVG图标`)
+    
+    // 检查是否是跨域请求
+    const isCrossOrigin = !imageUrl.startsWith(window.location.origin) && 
+                         !imageUrl.startsWith('/') && 
+                         !imageUrl.startsWith('./')
+
+    if (isCrossOrigin) {
+      // 对于跨域SVG，尝试使用代理服务
+      const proxyServices = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`,
+        `https://cors-anywhere.herokuapp.com/${imageUrl}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(imageUrl)}`
+      ]
+
+      for (const proxyUrl of proxyServices) {
+        try {
+          console.log(`🔍 尝试代理检测SVG: ${proxyUrl}`)
+          
+          const response = await fetch(proxyUrl, {
+            method: 'HEAD',
+            headers: {
+              'Accept': 'image/svg+xml,image/*,*/*;q=0.8'
+            },
+            timeout: 10000
+          })
+
+          if (response.ok) {
+            console.log(`✅ SVG代理检测成功`)
+            return imageUrl
+          }
+        } catch (error) {
+          console.log(`❌ SVG代理检测失败: ${error.message}`)
+          continue
+        }
       }
-      
-      // 检查Content-Type
-      const contentType = response.headers.get('content-type')
-      if (contentType && !contentType.includes('svg') && !contentType.includes('xml')) {
-        throw new Error(`Content-Type不正确: ${contentType}`)
+
+      // 如果所有代理都失败，尝试直接检测（可能会遇到CORS错误）
+      try {
+        const response = await fetch(imageUrl, { 
+          method: 'HEAD',
+          mode: 'cors',
+          credentials: 'omit'
+        })
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: 无法访问SVG图标`)
+        }
+        
+        // 检查Content-Type
+        const contentType = response.headers.get('content-type')
+        if (contentType && !contentType.includes('svg') && !contentType.includes('xml')) {
+          throw new Error(`Content-Type不正确: ${contentType}`)
+        }
+        
+        console.log(`✅ SVG图标检测成功`)
+        return imageUrl
+      } catch (fetchError) {
+        console.log(`❌ SVG直接检测失败: ${fetchError.message}`)
+        throw fetchError
       }
-      
-      console.log(`✅ SVG图标检测成功`)
-      return imageUrl
-    } catch (fetchError) {
-      console.log(`❌ SVG fetch失败: ${fetchError.message}`)
-      throw fetchError
+    } else {
+      // 同域名SVG直接检测
+      try {
+        const response = await fetch(imageUrl, { method: 'HEAD' })
+        if (!response.ok) {
+          throw new Error(`HTTP ${response.status}: 无法访问SVG图标`)
+        }
+        
+        // 检查Content-Type
+        const contentType = response.headers.get('content-type')
+        if (contentType && !contentType.includes('svg') && !contentType.includes('xml')) {
+          throw new Error(`Content-Type不正确: ${contentType}`)
+        }
+        
+        console.log(`✅ SVG图标检测成功`)
+        return imageUrl
+      } catch (fetchError) {
+        console.log(`❌ SVG fetch失败: ${fetchError.message}`)
+        throw fetchError
+      }
     }
   }
 
@@ -424,11 +482,55 @@ const downloadAndCacheIcon = async (iconUrl, domain) => {
   try {
     console.log(`📥 开始下载图标: ${iconUrl}`)
 
-    // 使用fetch下载图标
-    const response = await fetch(iconUrl, {
-      mode: 'cors',
-      credentials: 'omit'
-    })
+    // 检查是否是跨域请求
+    const isCrossOrigin = !iconUrl.startsWith(window.location.origin) && 
+                         !iconUrl.startsWith('/') && 
+                         !iconUrl.startsWith('./')
+
+    let response = null
+
+    if (isCrossOrigin) {
+      // 对于跨域请求，尝试使用代理服务
+      const proxyServices = [
+        `https://api.allorigins.win/raw?url=${encodeURIComponent(iconUrl)}`,
+        `https://cors-anywhere.herokuapp.com/${iconUrl}`,
+        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(iconUrl)}`
+      ]
+
+      for (const proxyUrl of proxyServices) {
+        try {
+          console.log(`🔍 尝试代理下载: ${proxyUrl}`)
+          
+          response = await fetch(proxyUrl, {
+            method: 'GET',
+            headers: {
+              'Accept': 'image/*,*/*;q=0.8'
+            },
+            timeout: 10000
+          })
+
+          if (response.ok) {
+            console.log(`✅ 代理下载成功: ${proxyUrl}`)
+            break
+          }
+        } catch (error) {
+          console.log(`❌ 代理下载失败: ${error.message}`)
+          continue
+        }
+      }
+
+      // 如果所有代理都失败，尝试直接下载（可能会遇到CORS错误）
+      if (!response || !response.ok) {
+        console.log(`🔍 尝试直接下载: ${iconUrl}`)
+        response = await fetch(iconUrl, {
+          mode: 'cors',
+          credentials: 'omit'
+        })
+      }
+    } else {
+      // 同域名请求直接下载
+      response = await fetch(iconUrl)
+    }
 
     if (!response.ok) {
       throw new Error(`下载失败: HTTP ${response.status}`)
@@ -474,77 +576,7 @@ const downloadAndCacheIcon = async (iconUrl, domain) => {
   }
 }
 
-// 从HTML中解析图标
-const parseIconFromHTML = async (domain) => {
-  try {
-    console.log(`🔍 开始解析HTML获取图标: https://${domain}`)
-    
-    // 使用代理服务或CORS代理来获取HTML
-    const proxyUrl = `https://api.allorigins.win/get?url=${encodeURIComponent(`https://${domain}`)}`
-    
-    const response = await fetch(proxyUrl, {
-      method: 'GET',
-      headers: {
-        'Content-Type': 'application/json'
-      }
-    })
 
-    if (!response.ok) {
-      throw new Error(`代理请求失败: HTTP ${response.status}`)
-    }
-
-    const data = await response.json()
-    if (!data.contents) {
-      throw new Error('无法获取网站内容')
-    }
-
-    // 解析HTML内容
-    const html = data.contents
-    const parser = new DOMParser()
-    const doc = parser.parseFromString(html, 'text/html')
-
-    // 按优先级查找图标
-    const iconSelectors = [
-      'link[rel="icon"][sizes="32x32"]',
-      'link[rel="icon"][sizes="16x16"]',
-      'link[rel="icon"]',
-      'link[rel="shortcut icon"]',
-      'link[rel="apple-touch-icon"][sizes="180x180"]',
-      'link[rel="apple-touch-icon"][sizes="152x152"]',
-      'link[rel="apple-touch-icon"][sizes="144x144"]',
-      'link[rel="apple-touch-icon"][sizes="120x120"]',
-      'link[rel="apple-touch-icon"]',
-      'link[rel="apple-touch-icon-precomposed"]',
-      'meta[property="og:image"]',
-      'meta[name="twitter:image"]'
-    ]
-
-    for (const selector of iconSelectors) {
-      const element = doc.querySelector(selector)
-      if (element) {
-        let iconUrl = element.getAttribute('href') || element.getAttribute('content')
-        
-        if (iconUrl) {
-          // 处理相对路径
-          if (iconUrl.startsWith('/')) {
-            iconUrl = `https://${domain}${iconUrl}`
-          } else if (!iconUrl.startsWith('http')) {
-            iconUrl = `https://${domain}/${iconUrl}`
-          }
-          
-          console.log(`✅ 从HTML解析到图标: ${iconUrl}`)
-          return iconUrl
-        }
-      }
-    }
-
-    console.log(`❌ HTML中未找到图标`)
-    return null
-  } catch (error) {
-    console.log(`❌ HTML解析失败: ${error.message}`)
-    return null
-  }
-}
 
 // 上传所有待处理的图标到GitHub（串行上传避免冲突）
 const uploadPendingIconsToGitHub = async () => {
@@ -598,101 +630,27 @@ const uploadPendingIconsToGitHub = async () => {
 
 // 获取favicon图标
 const tryFallbackServices = async (domain) => {
-  const strategies = [
-    // 策略1: 使用icon服务
-    {
-      name: '图标服务',
-      url: `https://icon.maodeyu.fun/favicon/${domain}`,
-      description: '使用第三方图标服务'
-    },
-    // 策略2: 标准favicon.ico路径
-    {
-      name: '标准路径',
-      url: `https://${domain}/favicon.ico`,
-      description: '网站根目录的favicon.ico'
-    },
-    // 策略3: 尝试apple-touch-icon
-    {
-      name: 'Apple Touch Icon',
-      url: `https://${domain}/apple-touch-icon.png`,
-      description: 'Apple设备的触摸图标'
-    },
-    // 策略4: 尝试apple-touch-icon-precomposed
-    {
-      name: 'Apple Touch Icon Precomposed',
-      url: `https://${domain}/apple-touch-icon-precomposed.png`,
-      description: '预处理的Apple触摸图标'
-    },
-    // 策略5: 尝试logo.png
-    {
-      name: 'Logo PNG',
-      url: `https://${domain}/logo.png`,
-      description: '网站logo文件'
-    },
-    // 策略6: 尝试logo.svg
-    {
-      name: 'Logo SVG',
-      url: `https://${domain}/logo.svg`,
-      description: 'SVG格式的logo'
-    },
-    // 策略7: 尝试icon.png
-    {
-      name: 'Icon PNG',
-      url: `https://${domain}/icon.png`,
-      description: 'PNG格式的图标'
-    },
-    // 策略8: 尝试icon.svg
-    {
-      name: 'Icon SVG',
-      url: `https://${domain}/icon.svg`,
-      description: 'SVG格式的图标'
-    },
-    // 策略9: 尝试favicon.png
-    {
-      name: 'Favicon PNG',
-      url: `https://${domain}/favicon.png`,
-      description: 'PNG格式的favicon'
-    }
-  ]
-
-  for (const strategy of strategies) {
-    try {
-      console.log(`🔍 尝试策略 [${strategy.name}]: ${strategy.url}`)
-      console.log(`📝 描述: ${strategy.description}`)
-
-      // 先测试图标是否可用
-      await testImage(strategy.url)
-
-      // 下载并缓存到内存
-      const localPath = await downloadAndCacheIcon(strategy.url, domain)
-
-      formData.value.icon = localPath
-      iconError.value = false
-      console.log(`✅ 成功获取并保存图标 (${strategy.name})`)
-      return
-    } catch (error) {
-      console.log(`❌ 策略 [${strategy.name}] 失败: ${error.message}`)
-      continue
-    }
-  }
-
-  // 如果所有策略都失败，尝试从HTML中解析图标
+  const iconUrl = `https://icon.bqb.cool/?url=${domain}`
+  
   try {
-    console.log(`🔍 尝试从HTML解析图标: https://${domain}`)
-    const iconUrl = await parseIconFromHTML(domain)
-    if (iconUrl) {
-      const localPath = await downloadAndCacheIcon(iconUrl, domain)
-      formData.value.icon = localPath
-      iconError.value = false
-      console.log(`✅ 从HTML解析图标成功`)
-      return
-    }
+    // 测试图标可用性并下载缓存
+    await testImage(iconUrl)
+    const localPath = await downloadAndCacheIcon(iconUrl, domain)
+    
+    formData.value.icon = localPath
+    iconError.value = false
   } catch (error) {
-    console.log(`❌ HTML解析失败: ${error.message}`)
-  }
+    const errorMessage = `❌ 无法自动获取网站图标
 
-  console.error('❌ 所有策略都无法获取网站图标')
-  alert('❌ 无法获取网站图标，请手动输入图标URL。\n\n💡 建议使用网站的 favicon.ico 或其他图标链接。')
+🔍 已尝试：图标服务 (https://icon.bqb.cool)
+
+💡 建议：
+• 手动输入：https://${domain}/favicon.ico
+• 其他服务：https://www.google.com/s2/favicons?domain=${domain}
+• 或下载图标后手动上传`
+
+    alert(errorMessage)
+  }
 }
 
 // 自动检测图标
@@ -705,22 +663,13 @@ const autoDetectIcon = async () => {
   try {
     const url = new URL(formData.value.url)
     
-    // 显示加载状态
-    const loadingMessage = '正在检测站点图标，请稍候...'
-    console.log(loadingMessage)
-    
     // 清空之前的图标
     formData.value.icon = ''
     iconError.value = false
     
     await tryFallbackServices(url.host)
     
-    // 如果成功获取到图标，显示成功消息
-    if (formData.value.icon) {
-      console.log('✅ 图标检测完成')
-    }
   } catch (error) {
-    console.error('URL 解析错误:', error)
     alert('URL格式不正确，请检查输入的网址')
   }
 }
