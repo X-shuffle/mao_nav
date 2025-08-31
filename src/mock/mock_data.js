@@ -276,6 +276,13 @@ export const mockData = {
           "url": "https://github.com/tvvocold/How-To-Ask-Questions-The-Smart-Way",
           "description": "",
           "icon": "/sitelogo/github.com.ico"
+        },
+        {
+          "id": "site-1756651876753",
+          "name": "htmx",
+          "url": "https://htmx.org/",
+          "description": "对应中文版 ：  https://gethtmx.com/",
+          "icon": "/sitelogo/htmx.org.ico"
         }
       ]
     },
