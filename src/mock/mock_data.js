@@ -33,6 +33,13 @@ export const mockData = {
           "url": "https://augment.caicode.org/dash",
           "description": "augment 代理",
           "icon": ""
+        },
+        {
+          "id": "site-1757175541673",
+          "name": "免费的 tidb 存储",
+          "url": "https://tidbcloud.com/",
+          "description": "账号：github",
+          "icon": "/sitelogo/tidbcloud.com.ico"
         }
       ]
     },
@@ -217,6 +224,13 @@ export const mockData = {
           "name": "网站秒变APP",
           "url": "https://blackace.app/",
           "description": "输入网站URL，即可打包成一个安卓APP",
+          "icon": ""
+        },
+        {
+          "id": "site-1757175497575",
+          "name": "免费的mongodb 存储",
+          "url": "https://cloud.mongodb.com/",
+          "description": "账号为：谷歌账号",
           "icon": ""
         }
       ]
