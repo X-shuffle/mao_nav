@@ -347,6 +347,13 @@ export const mockData = {
           "url": "https://ping0.cc/",
           "description": "",
           "icon": "/sitelogo/ping0.cc.ico"
+        },
+        {
+          "id": "site-1757297850648",
+          "name": "越南临时教育邮箱",
+          "url": "https://imail.edu.vn/",
+          "description": "",
+          "icon": "/sitelogo/imail.edu.vn.ico"
         }
       ]
     },
