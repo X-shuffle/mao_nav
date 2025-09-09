@@ -297,6 +297,13 @@ export const mockData = {
           "url": "https://htmx.org/",
           "description": "对应中文版 ：  https://gethtmx.com/",
           "icon": "/sitelogo/htmx.org.ico"
+        },
+        {
+          "id": "site-1757418173638",
+          "name": "Hypermedia Systems",
+          "url": "https://hypermedia.systems/book/contents/",
+          "description": "过去 20 年里看过的关于 Web 开发的最好的书",
+          "icon": ""
         }
       ]
     },
