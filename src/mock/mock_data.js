@@ -311,6 +311,13 @@ export const mockData = {
           "url": "https://roadmap.sh/backend",
           "description": "",
           "icon": "/sitelogo/roadmap.sh.ico"
+        },
+        {
+          "id": "site-1757751557954",
+          "name": "HTML 规范",
+          "url": "https://html.spec.whatwg.org/multipage/",
+          "description": "学习 HTML 最权威的资源是 HTML 规范",
+          "icon": ""
         }
       ]
     },
