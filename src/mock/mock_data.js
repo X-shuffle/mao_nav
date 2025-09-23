@@ -375,6 +375,13 @@ export const mockData = {
           "url": "https://imail.edu.vn/",
           "description": "",
           "icon": "/sitelogo/imail.edu.vn.ico"
+        },
+        {
+          "id": "site-1758626993535",
+          "name": "中国铁路在线地图",
+          "url": "http://cnrail.geogv.org/zhcn/",
+          "description": "",
+          "icon": "/sitelogo/cnrail.geogv.org.ico"
         }
       ]
     },
