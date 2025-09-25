@@ -318,6 +318,13 @@ export const mockData = {
           "url": "https://html.spec.whatwg.org/multipage/",
           "description": "学习 HTML 最权威的资源是 HTML 规范",
           "icon": ""
+        },
+        {
+          "id": "site-1758811848141",
+          "name": "bytebytego",
+          "url": "https://bytebytego.com/guides/",
+          "description": "系统设计学习",
+          "icon": "/sitelogo/bytebytego.com.ico"
         }
       ]
     },
