@@ -396,6 +396,13 @@ export const mockData = {
           "url": "https://nullsto.edu.pl/",
           "description": "temporary education email",
           "icon": ""
+        },
+        {
+          "id": "site-1760848067607",
+          "name": "接码",
+          "url": "https://sms-activate.io/cn",
+          "description": "",
+          "icon": "/sitelogo/sms-activate.io.ico"
         }
       ]
     },
