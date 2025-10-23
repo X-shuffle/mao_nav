@@ -182,6 +182,13 @@ export const mockData = {
           "url": "https://tidbcloud.com/",
           "description": "账号：github",
           "icon": "/sitelogo/tidbcloud.com.ico"
+        },
+        {
+          "id": "site-1761213324729",
+          "name": "拼流量",
+          "url": "https://www.lxc.wiki/clientarea",
+          "description": "github 登录",
+          "icon": "/sitelogo/www.lxc.wiki.ico"
         }
       ]
     },
