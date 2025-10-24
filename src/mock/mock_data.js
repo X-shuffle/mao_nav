@@ -2,17 +2,10 @@ export const mockData = {
   "categories": [
     {
       "id": "my-favorites",
-      "name": "我的常用",
+      "name": "自己维护的",
       "icon": "💥",
       "order": 0,
       "sites": [
-        {
-          "id": "linux-do",
-          "name": "Linux.do",
-          "url": "https://linux.do",
-          "description": "Linux技术社区，Peace and Love",
-          "icon": "/sitelogo/linux.do.ico"
-        },
         {
           "id": "site-1752856925183",
           "name": "xshuffle_blog",
@@ -40,6 +33,13 @@ export const mockData = {
           "url": "https://xshuffle.live/",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1761291688192",
+          "name": "自己的在线聊天",
+          "url": "https://chat.xu-ux.eu.org",
+          "description": "",
+          "icon": "/sitelogo/chat.xu-ux.eu.org.ico"
         }
       ]
     },
@@ -268,6 +268,13 @@ export const mockData = {
           "url": "https://www.52pojie.cn/",
           "description": "软件安全与破解技术论坛",
           "icon": "/sitelogo/www.52pojie.cn.ico"
+        },
+        {
+          "id": "linux-do",
+          "name": "Linux.do",
+          "url": "https://linux.do",
+          "description": "Linux技术社区，Peace and Love",
+          "icon": "/sitelogo/linux.do.ico"
         }
       ]
     },
