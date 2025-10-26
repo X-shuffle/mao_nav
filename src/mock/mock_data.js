@@ -21,13 +21,6 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1753176738684",
-          "name": "augment 代理",
-          "url": "https://augment.caicode.org/dash",
-          "description": "augment 代理",
-          "icon": ""
-        },
-        {
           "id": "site-1760886332740",
           "name": "今天吃什么",
           "url": "https://xshuffle.live/",
