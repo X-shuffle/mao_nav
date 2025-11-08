@@ -339,6 +339,13 @@ export const mockData = {
           "url": "https://bytebytego.com/guides/",
           "description": "系统设计学习",
           "icon": "/sitelogo/bytebytego.com.ico"
+        },
+        {
+          "id": "site-1762612432280",
+          "name": "Machine learning",
+          "url": "https://www.chioka.in/",
+          "description": "",
+          "icon": "/sitelogo/www.chioka.in.ico"
         }
       ]
     },
