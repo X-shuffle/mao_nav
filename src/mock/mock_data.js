@@ -424,6 +424,13 @@ export const mockData = {
           "url": "https://sms-activate.io/cn",
           "description": "",
           "icon": "/sitelogo/sms-activate.io.ico"
+        },
+        {
+          "id": "site-1762852707134",
+          "name": "盒马教育邮箱",
+          "url": "https://mail.hema.edu.kg/inbox",
+          "description": "linuxdo 登录",
+          "icon": ""
         }
       ]
     },
