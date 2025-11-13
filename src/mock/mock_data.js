@@ -517,6 +517,13 @@ export const mockData = {
           "url": "https://exunoplures.hu/public/pdf/a-decade-on-money-40.pdf",
           "description": "",
           "icon": "/sitelogo/exunoplures.hu.ico"
+        },
+        {
+          "id": "site-1763044987362",
+          "name": "docker 安装",
+          "url": "https://tomerklein.dev/step-by-step-tutorial-installing-docker-and-docker-compose-on-ubuntu-a98a1b7aaed0",
+          "description": "靠这个安装的 docker 没有网络问题",
+          "icon": ""
         }
       ]
     }
