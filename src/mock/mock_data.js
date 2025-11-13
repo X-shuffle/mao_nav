@@ -391,13 +391,6 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1752859839812",
-          "name": "查看本机代理 ip",
-          "url": "https://ping0.cc/",
-          "description": "",
-          "icon": "/sitelogo/ping0.cc.ico"
-        },
-        {
           "id": "site-1757297850648",
           "name": "越南临时教育邮箱",
           "url": "https://imail.edu.vn/",
@@ -431,6 +424,13 @@ export const mockData = {
           "url": "https://mail.hema.edu.kg/inbox",
           "description": "linuxdo 登录",
           "icon": ""
+        },
+        {
+          "id": "site-1752859839812",
+          "name": "查看本机代理 ip",
+          "url": "https://ippure.com/",
+          "description": "",
+          "icon": "/sitelogo/ping0.cc.ico"
         }
       ]
     },
