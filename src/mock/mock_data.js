@@ -104,13 +104,6 @@ export const mockData = {
           "url": "https://inference.net",
           "description": "",
           "icon": "/sitelogo/inference.net.ico"
-        },
-        {
-          "id": "site-1763099030404",
-          "name": "megallm",
-          "url": "https://megallm.io/dashboard/overview",
-          "description": "75 的额度",
-          "icon": ""
         }
       ]
     },
@@ -438,6 +431,13 @@ export const mockData = {
           "url": "https://ippure.com/",
           "description": "",
           "icon": "/sitelogo/ping0.cc.ico"
+        },
+        {
+          "id": "site-1763133028573",
+          "name": "临时信用卡生成器",
+          "url": "https://luhn.iding.qzz.io/",
+          "description": "可以应对一些检验",
+          "icon": ""
         }
       ]
     },
