@@ -104,6 +104,13 @@ export const mockData = {
           "url": "https://inference.net",
           "description": "",
           "icon": "/sitelogo/inference.net.ico"
+        },
+        {
+          "id": "site-1763099030404",
+          "name": "megallm",
+          "url": "https://megallm.io/dashboard/overview",
+          "description": "75 的额度",
+          "icon": ""
         }
       ]
     },
