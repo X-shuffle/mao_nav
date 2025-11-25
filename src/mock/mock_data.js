@@ -268,6 +268,13 @@ export const mockData = {
           "url": "https://www.52pojie.cn/",
           "description": "软件安全与破解技术论坛",
           "icon": "/sitelogo/www.52pojie.cn.ico"
+        },
+        {
+          "id": "site-1764075588836",
+          "name": "nodeseek",
+          "url": "https://www.nodeseek.com/",
+          "description": "",
+          "icon": "/sitelogo/www.nodeseek.com.ico"
         }
       ]
     },
