@@ -182,6 +182,13 @@ export const mockData = {
           "url": "https://www.lxc.wiki/clientarea",
           "description": "github 登录",
           "icon": "/sitelogo/www.lxc.wiki.ico"
+        },
+        {
+          "id": "site-1764037756390",
+          "name": "vps 补货监控",
+          "url": "https://stock.hostmonit.com/",
+          "description": "",
+          "icon": "/sitelogo/stock.hostmonit.com.ico"
         }
       ]
     },
