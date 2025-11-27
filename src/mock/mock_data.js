@@ -445,6 +445,13 @@ export const mockData = {
           "url": "https://luhn.iding.qzz.io/",
           "description": "可以应对一些检验",
           "icon": ""
+        },
+        {
+          "id": "site-1764231191106",
+          "name": "发现 App 全球最低订阅价格",
+          "url": "https://www.findcheapsubs.com/zh",
+          "description": "",
+          "icon": ""
         }
       ]
     },
