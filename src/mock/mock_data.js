@@ -452,6 +452,13 @@ export const mockData = {
           "url": "https://www.findcheapsubs.com/zh",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1767078975036",
+          "name": "长期邮箱",
+          "url": "https://o-uu.com/inbox",
+          "description": "xshuffle@o-uu.com",
+          "icon": ""
         }
       ]
     },
