@@ -459,6 +459,13 @@ export const mockData = {
           "url": "https://o-uu.com/inbox",
           "description": "xshuffle@o-uu.com",
           "icon": ""
+        },
+        {
+          "id": "site-1768011076590",
+          "name": "真实地址生成器 ",
+          "url": "https://ip-geoaddress-generator.pages.dev",
+          "description": "根据 ip 生成地址",
+          "icon": ""
         }
       ]
     },
