@@ -419,13 +419,6 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1760848067607",
-          "name": "接码",
-          "url": "https://sms-activate.io/cn",
-          "description": "",
-          "icon": "/sitelogo/sms-activate.io.ico"
-        },
-        {
           "id": "site-1762852707134",
           "name": "盒马教育邮箱",
           "url": "https://mail.hema.edu.kg/inbox",
@@ -466,6 +459,13 @@ export const mockData = {
           "url": "https://ip-geoaddress-generator.pages.dev",
           "description": "根据 ip 生成地址",
           "icon": ""
+        },
+        {
+          "id": "site-1760848067607",
+          "name": "接码",
+          "url": "https://hero-sms.com/",
+          "description": "",
+          "icon": "/sitelogo/sms-activate.io.ico"
         }
       ]
     },
