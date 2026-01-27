@@ -104,6 +104,13 @@ export const mockData = {
           "url": "https://inference.net",
           "description": "",
           "icon": "/sitelogo/inference.net.ico"
+        },
+        {
+          "id": "site-1769522794695",
+          "name": "visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention",
+          "url": "https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/",
+          "description": "visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention",
+          "icon": ""
         }
       ]
     },
