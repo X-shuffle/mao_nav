@@ -473,6 +473,13 @@ export const mockData = {
           "url": "https://hero-sms.com/",
           "description": "",
           "icon": "/sitelogo/sms-activate.io.ico"
+        },
+        {
+          "id": "site-1769947937503",
+          "name": "youtube 下载器",
+          "url": "https://addyoutube.com/result",
+          "description": "包含对视频的描述和一些简介",
+          "icon": "/sitelogo/addyoutube.com.ico"
         }
       ]
     },
