@@ -367,6 +367,13 @@ export const mockData = {
           "url": "https://transformers.run/",
           "description": "transformers 中文文档",
           "icon": "/sitelogo/transformers.run.ico"
+        },
+        {
+          "id": "site-1772361467439",
+          "name": "agent 开发学习",
+          "url": "https://github.com/datawhalechina/hello-agents",
+          "description": "agent 开发学习",
+          "icon": "/sitelogo/github.com.ico"
         }
       ]
     },
