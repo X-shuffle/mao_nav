@@ -360,6 +360,13 @@ export const mockData = {
           "url": "https://www.chioka.in/",
           "description": "",
           "icon": "/sitelogo/www.chioka.in.ico"
+        },
+        {
+          "id": "site-1772359510913",
+          "name": "transformers 中文入门",
+          "url": "https://transformers.run/",
+          "description": "transformers 中文文档",
+          "icon": "/sitelogo/transformers.run.ico"
         }
       ]
     },
