@@ -374,6 +374,13 @@ export const mockData = {
           "url": "https://github.com/datawhalechina/hello-agents",
           "description": "agent 开发学习",
           "icon": "/sitelogo/github.com.ico"
+        },
+        {
+          "id": "site-1773413243018",
+          "name": "AI 学习笔记",
+          "url": "https://ai.ascotbe.com/index.html",
+          "description": "别人的 ai 学习笔记",
+          "icon": ""
         }
       ]
     },
