@@ -381,6 +381,13 @@ export const mockData = {
           "url": "https://ai.ascotbe.com/index.html",
           "description": "别人的 ai 学习笔记",
           "icon": ""
+        },
+        {
+          "id": "site-1773482466207",
+          "name": "LangChainGo",
+          "url": "https://tmc.github.io/langchaingo/docs/#%EF%B8%8F-how-to-guides",
+          "description": "LangChain 的 golang 版本",
+          "icon": ""
         }
       ]
     },
