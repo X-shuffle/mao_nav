@@ -282,6 +282,13 @@ export const mockData = {
           "url": "https://www.nodeseek.com/",
           "description": "",
           "icon": "/sitelogo/www.nodeseek.com.ico"
+        },
+        {
+          "id": "site-1774580045226",
+          "name": "Hacker News",
+          "url": "http://news.ycombinator.com/",
+          "description": "",
+          "icon": ""
         }
       ]
     },
