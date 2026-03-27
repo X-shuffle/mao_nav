@@ -508,6 +508,13 @@ export const mockData = {
           "url": "https://addyoutube.com/result",
           "description": "包含对视频的描述和一些简介",
           "icon": "/sitelogo/addyoutube.com.ico"
+        },
+        {
+          "id": "site-1774579682816",
+          "name": "生成播客API",
+          "url": "https://listenhub.ai",
+          "description": "",
+          "icon": "/sitelogo/listenhub.ai.ico"
         }
       ]
     },
