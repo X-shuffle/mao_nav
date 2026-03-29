@@ -33,6 +33,13 @@ export const mockData = {
           "url": "https://chat.xu-ux.eu.org",
           "description": "",
           "icon": "/sitelogo/chat.xu-ux.eu.org.ico"
+        },
+        {
+          "id": "site-1774774220396",
+          "name": "ccx",
+          "url": "https://ccx.xshuffle.cc.cd",
+          "description": "",
+          "icon": ""
         }
       ]
     },
