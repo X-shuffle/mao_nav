@@ -40,6 +40,13 @@ export const mockData = {
           "url": "https://ccx.xshuffle.cc.cd",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1775662510967",
+          "name": "cpa",
+          "url": "https://xshuffle.cc.cd/management.html#/login",
+          "description": "",
+          "icon": ""
         }
       ]
     },
@@ -529,6 +536,13 @@ export const mockData = {
           "url": "https://listenhub.ai",
           "description": "",
           "icon": "/sitelogo/listenhub.ai.ico"
+        },
+        {
+          "id": "site-1775662472650",
+          "name": "邮箱接码平台",
+          "url": "https://mails.luckyous.com/",
+          "description": "",
+          "icon": "/sitelogo/mails.luckyous.com.ico"
         }
       ]
     },
