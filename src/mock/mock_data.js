@@ -543,6 +543,13 @@ export const mockData = {
           "url": "https://mails.luckyous.com/",
           "description": "",
           "icon": "/sitelogo/mails.luckyous.com.ico"
+        },
+        {
+          "id": "site-1775721607601",
+          "name": "手机号操作",
+          "url": "https://www.smspool.net/main",
+          "description": "",
+          "icon": "/sitelogo/www.smspool.net.ico"
         }
       ]
     },
