@@ -125,6 +125,13 @@ export const mockData = {
           "url": "https://jalammar.github.io/visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention/",
           "description": "visualizing-neural-machine-translation-mechanics-of-seq2seq-models-with-attention",
           "icon": ""
+        },
+        {
+          "id": "site-1775986825045",
+          "name": "向量化和重排 ",
+          "url": "https://ai.gitee.com/serverless-api#embedding-rerank",
+          "description": "向量化和重排 免费模型调度次数",
+          "icon": "/sitelogo/ai.gitee.com.ico"
         }
       ]
     },
