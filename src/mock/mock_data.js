@@ -132,6 +132,13 @@ export const mockData = {
           "url": "https://ai.gitee.com/serverless-api#embedding-rerank",
           "description": "向量化和重排 免费模型调度次数",
           "icon": "/sitelogo/ai.gitee.com.ico"
+        },
+        {
+          "id": "site-1776226657107",
+          "name": "ai Recharge",
+          "url": "https://www.cdk.do/",
+          "description": "",
+          "icon": "/sitelogo/www.cdk.do.ico"
         }
       ]
     },
