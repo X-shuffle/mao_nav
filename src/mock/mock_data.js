@@ -571,6 +571,13 @@ export const mockData = {
           "url": "https://email-web-app.j3.workers.dev/",
           "description": "",
           "icon": "/sitelogo/email-web-app.j3.workers.dev.ico"
+        },
+        {
+          "id": "site-1777294478076",
+          "name": "临时生成器",
+          "url": "https://kjmail.kjedutech.in/",
+          "description": "\n临时电子邮件 + 临时电话号码 + 假地址 + URL Shortener + 泄密检查器 ",
+          "icon": "/sitelogo/kjmail.kjedutech.in.ico"
         }
       ]
     },
