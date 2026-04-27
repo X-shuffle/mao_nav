@@ -564,6 +564,13 @@ export const mockData = {
           "url": "https://www.smspool.net/main",
           "description": "",
           "icon": "/sitelogo/www.smspool.net.ico"
+        },
+        {
+          "id": "site-1777294145833",
+          "name": "教育邮箱",
+          "url": "https://email-web-app.j3.workers.dev/",
+          "description": "",
+          "icon": "/sitelogo/email-web-app.j3.workers.dev.ico"
         }
       ]
     },
