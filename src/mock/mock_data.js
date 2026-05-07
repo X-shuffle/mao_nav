@@ -642,6 +642,13 @@ export const mockData = {
           "url": "http://daziya.com/",
           "description": "快速掌握打字指法与盲打技巧\n",
           "icon": "/sitelogo/daziya.com.ico"
+        },
+        {
+          "id": "site-1778138950623",
+          "name": "公益MoonTVPlus ",
+          "url": "https://moontv.662778.xyz/",
+          "description": "",
+          "icon": "/sitelogo/moontv.662778.xyz.ico"
         }
       ]
     },
