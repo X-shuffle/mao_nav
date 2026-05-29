@@ -585,6 +585,13 @@ export const mockData = {
           "url": "https://kjmail.kjedutech.in/",
           "description": "\n临时电子邮件 + 临时电话号码 + 假地址 + URL Shortener + 泄密检查器 ",
           "icon": "/sitelogo/kjmail.kjedutech.in.ico"
+        },
+        {
+          "id": "site-1780034680621",
+          "name": "百度网盘公益解析站",
+          "url": "https://bb.lovelss.com/",
+          "description": "",
+          "icon": "/sitelogo/bb.lovelss.com.ico"
         }
       ]
     },
