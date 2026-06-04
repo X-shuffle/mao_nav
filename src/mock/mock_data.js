@@ -592,6 +592,13 @@ export const mockData = {
           "url": "https://bb.lovelss.com/",
           "description": "",
           "icon": "/sitelogo/bb.lovelss.com.ico"
+        },
+        {
+          "id": "site-1780555874522",
+          "name": "教育邮箱 linuxdo.edu.kg",
+          "url": "https://linuxdo.edu.kg/inbox",
+          "description": "xshuffle",
+          "icon": ""
         }
       ]
     },
