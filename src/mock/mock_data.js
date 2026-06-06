@@ -231,6 +231,13 @@ export const mockData = {
           "url": "https://stock.hostmonit.com/",
           "description": "",
           "icon": "/sitelogo/stock.hostmonit.com.ico"
+        },
+        {
+          "id": "site-1780760961980",
+          "name": "evoxt 250g",
+          "url": "https://console.evoxt.com/dashboard.php",
+          "description": "nodeseek.org",
+          "icon": ""
         }
       ]
     },
