@@ -606,6 +606,13 @@ export const mockData = {
           "url": "https://linuxdo.edu.kg/inbox",
           "description": "xshuffle",
           "icon": ""
+        },
+        {
+          "id": "site-1780976183977",
+          "name": "邮箱",
+          "url": "https://em.bjedu.tech/inbox",
+          "description": "",
+          "icon": "/sitelogo/em.bjedu.tech.ico"
         }
       ]
     },
