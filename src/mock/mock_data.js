@@ -146,6 +146,13 @@ export const mockData = {
           "url": "https://agent.tinyfish.ai/agent",
           "description": "TinyFish 刚把 Web Search 和 Fetch 两个接口对开发者免费开放，不用绑信用卡。搜了下好像没见有人发，写个帖子分享一下\n\n免费额度：搜索 5次/分钟，抓取 25次/分钟。抓取失败不扣额度。",
           "icon": ""
+        },
+        {
+          "id": "site-1782194882177",
+          "name": "免费的 api",
+          "url": "https://unlimited.surf/",
+          "description": "只用来聊天，有工具投毒",
+          "icon": "/sitelogo/unlimited.surf.ico"
         }
       ]
     },
