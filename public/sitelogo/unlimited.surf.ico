@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Unlimited AI">
+    <defs>
+        <linearGradient id="ua-bg" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0" stop-color="#1a0f24"/>
+            <stop offset="1" stop-color="#0a0510"/>
+        </linearGradient>
+        <linearGradient id="ua-stroke" x1="0.2" y1="0" x2="0.8" y2="1">
+            <stop offset="0" stop-color="#e8c2ff"/>
+            <stop offset="0.5" stop-color="#c879ff"/>
+            <stop offset="1" stop-color="#8b3df0"/>
+        </linearGradient>
+        <filter id="ua-glow" x="-30%" y="-30%" width="160%" height="160%">
+            <feGaussianBlur stdDeviation="0.6" result="blur"/>
+            <feMerge>
+                <feMergeNode in="blur"/>
+                <feMergeNode in="SourceGraphic"/>
+            </feMerge>
+        </filter>
+    </defs>
+
+    <!-- panel -->
+    <rect width="32" height="32" rx="7.2" fill="url(#ua-bg)"/>
+    <rect x="0.6" y="0.6" width="30.8" height="30.8" rx="6.6" fill="none" stroke="rgba(200,121,255,0.18)" stroke-width="0.9"/>
+
+    <!-- A glyph -->
+    <g filter="url(#ua-glow)" fill="none" stroke="url(#ua-stroke)" stroke-width="3.6" stroke-linecap="round" stroke-linejoin="round">
+        <!-- left leg -->
+        <path d="M7.4 24.2 L15.4 8.2"/>
+        <!-- right leg -->
+        <path d="M24.6 24.2 L16.6 8.2"/>
+        <!-- crossbar -->
+        <path d="M11.3 17.8 L20.7 17.8"/>
+    </g>
+</svg>
