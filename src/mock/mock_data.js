@@ -620,6 +620,13 @@ export const mockData = {
           "url": "https://em.bjedu.tech/inbox",
           "description": "",
           "icon": "/sitelogo/em.bjedu.tech.ico"
+        },
+        {
+          "id": "site-1782456853496",
+          "name": "llm 可视化",
+          "url": "https://bbycroft.net/llm",
+          "description": "",
+          "icon": "/sitelogo/bbycroft.net.ico"
         }
       ]
     },
