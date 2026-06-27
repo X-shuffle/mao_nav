@@ -21,13 +21,6 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1760886332740",
-          "name": "今天吃什么",
-          "url": "https://xshuffle.live/",
-          "description": "",
-          "icon": ""
-        },
-        {
           "id": "site-1761291688192",
           "name": "自己的在线聊天",
           "url": "https://chat.xu-ux.eu.org",
@@ -45,6 +38,13 @@ export const mockData = {
           "id": "site-1775662510967",
           "name": "cpa",
           "url": "https://xshuffle.cc.cd/management.html#/login",
+          "description": "",
+          "icon": ""
+        },
+        {
+          "id": "site-1760886332740",
+          "name": "今天吃什么",
+          "url": "https://xshuffle.us.ci/",
           "description": "",
           "icon": ""
         }
