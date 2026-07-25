@@ -627,6 +627,13 @@ export const mockData = {
           "url": "https://bbycroft.net/llm",
           "description": "",
           "icon": "/sitelogo/bbycroft.net.ico"
+        },
+        {
+          "id": "site-1784999464078",
+          "name": "[希腊诺亚学院]教育邮箱",
+          "url": "https://mail.noah.edu.gr/inbox",
+          "description": "",
+          "icon": ""
         }
       ]
     },
