@@ -49,10 +49,10 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1785431403305",
+          "id": "site-1785431475586",
           "name": "临时邮箱",
           "url": "https://mail.x-shuffle.com/admin",
-          "description": "",
+          "description": "自己域名搭建的",
           "icon": ""
         }
       ]
