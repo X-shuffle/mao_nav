@@ -47,6 +47,13 @@ export const mockData = {
           "url": "https://xshuffle.us.ci/",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1785431403305",
+          "name": "临时邮箱",
+          "url": "https://mail.x-shuffle.com/admin",
+          "description": "",
+          "icon": ""
         }
       ]
     },
