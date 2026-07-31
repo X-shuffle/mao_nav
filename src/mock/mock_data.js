@@ -21,13 +21,6 @@ export const mockData = {
           "icon": ""
         },
         {
-          "id": "site-1761291688192",
-          "name": "自己的在线聊天",
-          "url": "https://chat.xu-ux.eu.org",
-          "description": "",
-          "icon": "/sitelogo/chat.xu-ux.eu.org.ico"
-        },
-        {
           "id": "site-1774774220396",
           "name": "ccx",
           "url": "https://ccx.xshuffle.cc.cd",
@@ -54,6 +47,13 @@ export const mockData = {
           "url": "https://mail.x-shuffle.com/admin",
           "description": "自己域名搭建的",
           "icon": ""
+        },
+        {
+          "id": "site-1761291688192",
+          "name": "自己的在线聊天",
+          "url": "https://chat.x-shuffle.com",
+          "description": "",
+          "icon": "/sitelogo/chat.xu-ux.eu.org.ico"
         }
       ]
     },
