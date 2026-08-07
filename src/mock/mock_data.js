@@ -309,6 +309,13 @@ export const mockData = {
           "url": "https://blackace.app/",
           "description": "输入网站URL，即可打包成一个安卓APP",
           "icon": ""
+        },
+        {
+          "id": "site-1786092341508",
+          "name": "mac 软件下载",
+          "url": "https://appstorrent.ru/",
+          "description": "",
+          "icon": ""
         }
       ]
     },
