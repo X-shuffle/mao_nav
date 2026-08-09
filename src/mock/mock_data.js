@@ -686,13 +686,6 @@ export const mockData = {
           "icon": "/sitelogo/game.hullqin.cn.ico"
         },
         {
-          "id": "site-1752859972597",
-          "name": "gying",
-          "url": "https://www.gying.in/",
-          "description": "观影",
-          "icon": "/sitelogo/www.gying.in.ico"
-        },
-        {
           "id": "site-1754797306499",
           "name": "皮皮妖",
           "url": "https://www.pipiyao.cc/",
@@ -712,6 +705,13 @@ export const mockData = {
           "url": "https://moontv.662778.xyz/",
           "description": "",
           "icon": "/sitelogo/moontv.662778.xyz.ico"
+        },
+        {
+          "id": "site-1752859972597",
+          "name": "gying",
+          "url": "https://www.xn--74qz10cqsltibh40akss.com/",
+          "description": "观影",
+          "icon": "/sitelogo/www.gying.in.ico"
         }
       ]
     },
