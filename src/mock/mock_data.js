@@ -316,6 +316,20 @@ export const mockData = {
           "url": "https://appstorrent.ru/",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1787647961726",
+          "name": "苹果系统之家",
+          "url": "https://macoshome.com/",
+          "description": "",
+          "icon": ""
+        },
+        {
+          "id": "site-1787647992093",
+          "name": "移花接木Mac资源网",
+          "url": "https://www.mac-gm.com/",
+          "description": "",
+          "icon": ""
         }
       ]
     },
