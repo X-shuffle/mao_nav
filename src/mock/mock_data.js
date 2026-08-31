@@ -7,13 +7,6 @@ export const mockData = {
       "order": 0,
       "sites": [
         {
-          "id": "site-1752856925183",
-          "name": "xshuffle_blog",
-          "url": "https://xu-ux.eu.org/",
-          "description": "",
-          "icon": "/sitelogo/xueqiu.com.ico"
-        },
-        {
           "id": "site-1752860760373",
           "name": "服务器监控",
           "url": "http://35.209.107.252:8090/",
@@ -54,6 +47,13 @@ export const mockData = {
           "url": "https://chat.x-shuffle.com",
           "description": "",
           "icon": "/sitelogo/chat.xu-ux.eu.org.ico"
+        },
+        {
+          "id": "site-1752856925183",
+          "name": "xshuffle_blog",
+          "url": "https://blog.x-shuffle.com",
+          "description": "",
+          "icon": "/sitelogo/xueqiu.com.ico"
         }
       ]
     },
