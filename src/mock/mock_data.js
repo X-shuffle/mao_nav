@@ -748,6 +748,13 @@ export const mockData = {
           "url": "https://tomerklein.dev/step-by-step-tutorial-installing-docker-and-docker-compose-on-ubuntu-a98a1b7aaed0",
           "description": "靠这个安装的 docker 没有网络问题",
           "icon": ""
+        },
+        {
+          "id": "site-1788361275202",
+          "name": "Understanding Word Embeddings in NLP",
+          "url": "https://vizuara.substack.com/p/from-words-to-vectors-understanding",
+          "description": "From Words to Vectors: Understanding Word Embeddings in NLP",
+          "icon": ""
         }
       ]
     }
