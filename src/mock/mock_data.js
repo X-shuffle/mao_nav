@@ -648,6 +648,13 @@ export const mockData = {
           "url": "https://mail.noah.edu.gr/inbox",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1788414991731",
+          "name": "教育邮箱2",
+          "url": "https://mail.xai.run/inbox",
+          "description": "",
+          "icon": ""
         }
       ]
     },
