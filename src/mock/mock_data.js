@@ -655,6 +655,13 @@ export const mockData = {
           "url": "https://mail.xai.run/inbox",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1790525225953",
+          "name": "appstore 低价区",
+          "url": "https://appstoreprice.org/zh/apps",
+          "description": "",
+          "icon": ""
         }
       ]
     },
