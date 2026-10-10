@@ -316,6 +316,13 @@ export const mockData = {
           "url": "https://appstorrent.ru/",
           "description": "",
           "icon": ""
+        },
+        {
+          "id": "site-1791659034463",
+          "name": "372 号码",
+          "url": "https://esim.gg/lines/ee/37281031994",
+          "description": "xshuffle01",
+          "icon": ""
         }
       ]
     },
