@@ -522,13 +522,13 @@ onMounted(() => {
 }
 
 .settings-header h2 {
-  color: #2c3e50;
+  color: var(--admin-ink);
   margin: 0 0 10px 0;
   font-size: 24px;
 }
 
 .settings-header p {
-  color: #7f8c8d;
+  color: var(--admin-muted);
   margin: 0;
   font-size: 16px;
 }
@@ -536,13 +536,13 @@ onMounted(() => {
 .settings-section {
   margin-bottom: 40px;
   padding: 25px;
-  background: #f8f9fa;
+  background: #f5f5f5;
   border-radius: 8px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--admin-line);
 }
 
 .settings-section h3 {
-  color: #2c3e50;
+  color: var(--admin-ink);
   margin: 0 0 20px 0;
   font-size: 18px;
   font-weight: 600;
@@ -556,7 +556,7 @@ onMounted(() => {
   padding: 20px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--admin-line);
 }
 
 .github-status.connected {
@@ -585,12 +585,12 @@ onMounted(() => {
 
 .status-text {
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--admin-ink);
 }
 
 .repo-info p {
   margin: 5px 0;
-  color: #7f8c8d;
+  color: var(--admin-muted);
   font-size: 14px;
 }
 
@@ -619,7 +619,7 @@ onMounted(() => {
 
 .test-btn {
   padding: 8px 16px;
-  background: #3498db;
+  background: var(--admin-accent);
   color: white;
   border: none;
   border-radius: 4px;
@@ -629,11 +629,11 @@ onMounted(() => {
 }
 
 .test-btn:hover:not(:disabled) {
-  background: #2980b9;
+  background: #414141;
 }
 
 .test-btn:disabled {
-  background: #bdc3c7;
+  background: #bcbcbc;
   cursor: not-allowed;
 }
 
@@ -651,12 +651,12 @@ onMounted(() => {
   padding: 15px;
   background: white;
   border-radius: 6px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--admin-line);
 }
 
 .config-item label {
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--admin-ink);
   flex: 1;
 }
 
@@ -677,9 +677,9 @@ onMounted(() => {
 }
 
 .value-display {
-  color: #7f8c8d;
+  color: var(--admin-muted);
   font-family: monospace;
-  background: #f8f9fa;
+  background: #f5f5f5;
   padding: 4px 8px;
   border-radius: 4px;
   font-size: 13px;
@@ -689,13 +689,13 @@ onMounted(() => {
 .config-guide {
   background: white;
   border-radius: 6px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--admin-line);
   overflow: hidden;
 }
 
 .guide-step {
   padding: 20px;
-  border-bottom: 1px solid #e9ecef;
+  border-bottom: 1px solid var(--admin-line);
 }
 
 .guide-step:last-child {
@@ -703,14 +703,14 @@ onMounted(() => {
 }
 
 .guide-step h4 {
-  color: #2c3e50;
+  color: var(--admin-ink);
   margin: 0 0 15px 0;
   font-size: 16px;
 }
 
 .guide-step ol, .guide-step ul {
   margin: 10px 0 0 20px;
-  color: #555;
+  color: var(--admin-muted);
 }
 
 .guide-step ol li, .guide-step ul li {
@@ -719,13 +719,13 @@ onMounted(() => {
 }
 
 .guide-step p {
-  color: #555;
+  color: var(--admin-muted);
   line-height: 1.6;
   margin: 10px 0;
 }
 
 .guide-step a {
-  color: #3498db;
+  color: var(--admin-accent);
   text-decoration: none;
 }
 
@@ -734,7 +734,7 @@ onMounted(() => {
 }
 
 .guide-step code {
-  background: #f8f9fa;
+  background: #f5f5f5;
   padding: 2px 6px;
   border-radius: 3px;
   font-family: 'Consolas', 'Monaco', monospace;
@@ -743,8 +743,8 @@ onMounted(() => {
 }
 
 .code-block {
-  background: #f8f9fa;
-  border: 1px solid #e9ecef;
+  background: #f5f5f5;
+  border: 1px solid var(--admin-line);
   border-radius: 6px;
   padding: 15px;
   margin: 15px 0;
@@ -756,14 +756,14 @@ onMounted(() => {
   font-family: 'Consolas', 'Monaco', monospace;
   font-size: 13px;
   line-height: 1.4;
-  color: #2c3e50;
+  color: var(--admin-ink);
 }
 
 /* 系统信息样式 */
 .system-info {
   background: white;
   border-radius: 6px;
-  border: 1px solid #e9ecef;
+  border: 1px solid var(--admin-line);
   padding: 20px;
 }
 
@@ -778,17 +778,17 @@ onMounted(() => {
   justify-content: space-between;
   align-items: center;
   padding: 10px;
-  background: #f8f9fa;
+  background: #f5f5f5;
   border-radius: 4px;
 }
 
 .info-label {
   font-weight: 500;
-  color: #2c3e50;
+  color: var(--admin-ink);
 }
 
 .info-value {
-  color: #7f8c8d;
+  color: var(--admin-muted);
   font-family: monospace;
   font-size: 13px;
   max-width: 200px;
@@ -812,12 +812,12 @@ onMounted(() => {
 
 .setting-group label {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--admin-ink);
   font-size: 16px;
 }
 
 .setting-description {
-  color: #7f8c8d;
+  color: var(--admin-muted);
   font-size: 13px;
   margin: 5px 0 0 0;
 }
@@ -832,7 +832,7 @@ onMounted(() => {
 .title-input {
   flex: 1;
   padding: 10px 15px;
-  border: 2px solid #e9ecef;
+  border: 2px solid var(--admin-line);
   border-radius: 6px;
   font-size: 14px;
   transition: border-color 0.3s ease;
@@ -840,12 +840,12 @@ onMounted(() => {
 
 .title-input:focus {
   outline: none;
-  border-color: #3498db;
+  border-color: var(--admin-accent);
 }
 
 .save-title-btn {
   padding: 10px 20px;
-  background: #3498db;
+  background: var(--admin-accent);
   color: white;
   border: none;
   border-radius: 6px;
@@ -856,11 +856,11 @@ onMounted(() => {
 }
 
 .save-title-btn:hover:not(:disabled) {
-  background: #2980b9;
+  background: #414141;
 }
 
 .save-title-btn:disabled {
-  background: #bdc3c7;
+  background: #bcbcbc;
   cursor: not-allowed;
 }
 
@@ -874,12 +874,12 @@ onMounted(() => {
 .logo-preview {
   width: 128px;
   height: 128px;
-  border: 2px dashed #e9ecef;
+  border: 2px dashed var(--admin-line);
   border-radius: 8px;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: #f8f9fa;
+  background: #f5f5f5;
   overflow: hidden;
 }
 
@@ -893,7 +893,7 @@ onMounted(() => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  color: #7f8c8d;
+  color: var(--admin-muted);
   text-align: center;
 }
 
@@ -924,12 +924,12 @@ onMounted(() => {
 }
 
 .select-logo-btn {
-  background: #95a5a6;
+  background: #636363;
   color: white;
 }
 
 .select-logo-btn:hover {
-  background: #7f8c8d;
+  background: var(--admin-muted);
 }
 
 .save-logo-btn {
@@ -942,7 +942,7 @@ onMounted(() => {
 }
 
 .save-logo-btn:disabled {
-  background: #bdc3c7;
+  background: #bcbcbc;
   cursor: not-allowed;
 }
 
