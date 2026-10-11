@@ -144,13 +144,15 @@
             <div class="icon-input-group">
               <input
                 v-model="formData.icon"
+                @input="cancelIconRequest"
                 placeholder="图标URL或使用自动获取"
                 class="form-input"
               >
-              <button type="button" @click="autoDetectIcon" class="auto-icon-btn">
-                🔍 自动获取
+              <button type="button" @click="autoDetectIcon" :disabled="fetchingIcon" class="auto-icon-btn">
+                {{ fetchingIcon ? '获取中...' : '🔍 自动获取' }}
               </button>
             </div>
+            <p v-if="iconStatus" role="status" class="icon-status">{{ iconStatus }}</p>
             <div class="icon-preview" v-if="formData.icon">
               <img :src="getIconDisplayUrl(formData.icon)" alt="图标预览" @error="iconError = true">
             </div>
@@ -169,8 +171,9 @@
 </template>
 
 <script setup>
-import { ref, computed, watch } from 'vue'
+import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import { useGitHubAPI } from '../../apis/useGitHubAPI.js'
+import { fetchSiteIcon, parseSiteUrl } from '../../apis/siteIcon.js'
 
 const props = defineProps({
   categories: {
@@ -210,6 +213,9 @@ const pageSize = 10
 const showAddModal = ref(false)
 const editingSite = ref(null)
 const iconError = ref(false)
+const fetchingIcon = ref(false)
+const iconStatus = ref('')
+let iconController = null
 
 // 表单数据
 const formData = ref({
@@ -292,6 +298,7 @@ const getIconDisplayUrl = (iconPath) => {
 
 // 编辑站点
 const editSite = (site) => {
+  cancelIconRequest()
   editingSite.value = site
   formData.value = {
     name: site.name,
@@ -314,273 +321,10 @@ const deleteSite = (site) => {
   }
 }
 
-// 通用图标测试函数
-const testImage = async (imageUrl) => {
-  console.log(`🔍 开始检测图标: ${imageUrl}`)
-
-  // 判断是否为同域名或用户直接输入的本站URL
-  const isSameDomain = imageUrl.startsWith(window.location.origin) ||
-                      imageUrl.startsWith('/') ||
-                      imageUrl.startsWith('./') ||
-                      !imageUrl.startsWith('http')
-
-  // 对于SVG文件，使用fetch检测
-  if (imageUrl.toLowerCase().includes('.svg')) {
-    console.log(`📄 SVG文件，使用fetch检测: ${imageUrl}`)
-    
-    // 检查是否是跨域请求
-    const isCrossOrigin = !imageUrl.startsWith(window.location.origin) && 
-                         !imageUrl.startsWith('/') && 
-                         !imageUrl.startsWith('./')
-
-    if (isCrossOrigin) {
-      // 对于跨域SVG，尝试使用代理服务
-      const proxyServices = [
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(imageUrl)}`,
-        `https://cors-anywhere.herokuapp.com/${imageUrl}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(imageUrl)}`
-      ]
-
-      for (const proxyUrl of proxyServices) {
-        try {
-          console.log(`🔍 尝试代理检测SVG: ${proxyUrl}`)
-          
-          const response = await fetch(proxyUrl, {
-            method: 'HEAD',
-            headers: {
-              'Accept': 'image/svg+xml,image/*,*/*;q=0.8'
-            },
-            timeout: 10000
-          })
-
-          if (response.ok) {
-            console.log(`✅ SVG代理检测成功`)
-            return imageUrl
-          }
-        } catch (error) {
-          console.log(`❌ SVG代理检测失败: ${error.message}`)
-          continue
-        }
-      }
-
-      // 如果所有代理都失败，尝试直接检测（可能会遇到CORS错误）
-      try {
-        const response = await fetch(imageUrl, { 
-          method: 'HEAD',
-          mode: 'cors',
-          credentials: 'omit'
-        })
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: 无法访问SVG图标`)
-        }
-        
-        // 检查Content-Type
-        const contentType = response.headers.get('content-type')
-        if (contentType && !contentType.includes('svg') && !contentType.includes('xml')) {
-          throw new Error(`Content-Type不正确: ${contentType}`)
-        }
-        
-        console.log(`✅ SVG图标检测成功`)
-        return imageUrl
-      } catch (fetchError) {
-        console.log(`❌ SVG直接检测失败: ${fetchError.message}`)
-        throw fetchError
-      }
-    } else {
-      // 同域名SVG直接检测
-      try {
-        const response = await fetch(imageUrl, { method: 'HEAD' })
-        if (!response.ok) {
-          throw new Error(`HTTP ${response.status}: 无法访问SVG图标`)
-        }
-        
-        // 检查Content-Type
-        const contentType = response.headers.get('content-type')
-        if (contentType && !contentType.includes('svg') && !contentType.includes('xml')) {
-          throw new Error(`Content-Type不正确: ${contentType}`)
-        }
-        
-        console.log(`✅ SVG图标检测成功`)
-        return imageUrl
-      } catch (fetchError) {
-        console.log(`❌ SVG fetch失败: ${fetchError.message}`)
-        throw fetchError
-      }
-    }
-  }
-
-  // 对于同域名的URL，可以使用fetch进行详细检测
-  if (isSameDomain) {
-    console.log(`📡 同域名资源，使用fetch检测: ${imageUrl}`)
-    try {
-      // 先检查文件大小，避免加载空的或无效的favicon
-      const response = await fetch(imageUrl, { method: 'HEAD' })
-      if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: 无法访问图标`)
-      }
-
-      // 检查Content-Length，如果小于512bytes认为可能是空文件或无效图标
-      const contentLength = response.headers.get('content-length')
-      if (contentLength && parseInt(contentLength) < 512) {
-        throw new Error(`文件过小 (${contentLength} bytes)，可能是空的或无效图标`)
-      }
-
-      // 如果没有Content-Length，尝试实际下载并检查大小
-      if (!contentLength) {
-        const fullResponse = await fetch(imageUrl)
-        if (!fullResponse.ok) {
-          throw new Error(`HTTP ${fullResponse.status}: 下载失败`)
-        }
-
-        const arrayBuffer = await fullResponse.arrayBuffer()
-        if (arrayBuffer.byteLength < 512) {
-          throw new Error(`下载文件过小 (${arrayBuffer.byteLength} bytes)，可能是空的或无效图标`)
-        }
-      }
-
-      // 大小检查通过后，验证是否能作为图片正常加载
-      return new Promise((resolve, reject) => {
-        const img = new Image()
-        img.onload = () => {
-          console.log(`✅ 同域名图标检测成功`)
-          resolve(imageUrl)
-        }
-        img.onerror = () => reject(new Error('图标格式无效或无法显示'))
-        img.src = imageUrl
-      })
-    } catch (fetchError) {
-      console.log(`❌ 同域名fetch失败: ${fetchError.message}`)
-      throw fetchError
-    }
-  }
-
-  // 对于跨域URL（包括所有favicon服务），优先使用Image检测避免CORS问题
-  console.log(`📸 跨域资源，使用Image检测: ${imageUrl}`)
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    img.onload = () => {
-      // 检查图片尺寸，过小可能是错误页面或无效图标
-      if (img.naturalWidth < 8 || img.naturalHeight < 8) {
-        console.log(`❌ 图片尺寸过小: ${img.naturalWidth}x${img.naturalHeight}`)
-        reject(new Error(`图片尺寸过小 (${img.naturalWidth}x${img.naturalHeight})，可能是无效图标`))
-        return
-      }
-      console.log(`✅ 跨域图标检测成功，尺寸: ${img.naturalWidth}x${img.naturalHeight}`)
-      resolve(imageUrl)
-    }
-    img.onerror = () => {
-      console.log(`❌ 图片加载失败: ${imageUrl}`)
-      reject(new Error('无法加载图标或图标不存在'))
-    }
-    // 对于跨域图片，不设置crossOrigin以避免额外的CORS检查
-    img.src = imageUrl
-  })
-}
-
-// 下载图标并缓存
-const downloadAndCacheIcon = async (iconUrl, domain) => {
-  try {
-    console.log(`📥 开始下载图标: ${iconUrl}`)
-
-    // 检查是否是跨域请求
-    const isCrossOrigin = !iconUrl.startsWith(window.location.origin) && 
-                         !iconUrl.startsWith('/') && 
-                         !iconUrl.startsWith('./')
-
-    let response = null
-
-    if (isCrossOrigin) {
-      // 对于跨域请求，尝试使用代理服务
-      const proxyServices = [
-        `https://api.allorigins.win/raw?url=${encodeURIComponent(iconUrl)}`,
-        `https://cors-anywhere.herokuapp.com/${iconUrl}`,
-        `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(iconUrl)}`
-      ]
-
-      for (const proxyUrl of proxyServices) {
-        try {
-          console.log(`🔍 尝试代理下载: ${proxyUrl}`)
-          
-          response = await fetch(proxyUrl, {
-            method: 'GET',
-            headers: {
-              'Accept': 'image/*,*/*;q=0.8'
-            },
-            timeout: 10000
-          })
-
-          if (response.ok) {
-            console.log(`✅ 代理下载成功: ${proxyUrl}`)
-            break
-          }
-        } catch (error) {
-          console.log(`❌ 代理下载失败: ${error.message}`)
-          continue
-        }
-      }
-
-      // 如果所有代理都失败，尝试直接下载（可能会遇到CORS错误）
-      if (!response || !response.ok) {
-        console.log(`🔍 尝试直接下载: ${iconUrl}`)
-        response = await fetch(iconUrl, {
-          mode: 'cors',
-          credentials: 'omit'
-        })
-      }
-    } else {
-      // 同域名请求直接下载
-      response = await fetch(iconUrl)
-    }
-
-    if (!response.ok) {
-      throw new Error(`下载失败: HTTP ${response.status}`)
-    }
-
-    // 获取图标数据
-    const arrayBuffer = await response.arrayBuffer()
-
-    // 检查文件大小
-    if (arrayBuffer.byteLength < 512) {
-      throw new Error('图标文件过小，可能是无效文件')
-    }
-
-    // 创建本地文件路径和文件名
-    const fileName = `${domain}.ico`
-    const localPath = `/sitelogo/${fileName}`
-
-    // 创建data URL用于编辑期间的预览
-    const blob = new Blob([arrayBuffer], { type: 'image/x-icon' })
-    const dataUrl = URL.createObjectURL(blob)
-
-    // 将图标数据缓存到内存中，等待后续上传
-    pendingIcons.value.set(domain, {
-      arrayBuffer,
-      fileName,
-      localPath,
-      domain
-    })
-
-    // 缓存预览URL，用于编辑期间显示
-    // 如果之前有同域名的预览，先清理掉
-    const oldPreview = iconPreviews.value.get(localPath)
-    if (oldPreview) {
-      URL.revokeObjectURL(oldPreview)
-    }
-    iconPreviews.value.set(localPath, dataUrl)
-
-    console.log(`✅ 图标下载并缓存成功: ${localPath}`)
-    return localPath
-  } catch (error) {
-    console.log(`❌ 下载图标失败: ${error.message}`)
-    throw error
-  }
-}
-
-
-
 // 上传所有待处理的图标到GitHub（串行上传避免冲突）
 const uploadPendingIconsToGitHub = async () => {
-  const icons = Array.from(pendingIcons.value.values())
+  const usedPaths = new Set(allSites.value.map(site => site.icon))
+  const icons = Array.from(pendingIcons.value.values()).filter(icon => usedPaths.has(icon.localPath))
   if (icons.length === 0) {
     console.log('没有待上传的图标')
     return
@@ -601,7 +345,7 @@ const uploadPendingIconsToGitHub = async () => {
       console.log(`✅ 图标已上传到GitHub: ${githubPath}`)
 
       // 上传成功后从待处理列表中移除
-      pendingIcons.value.delete(icon.domain)
+      pendingIcons.value.delete(icon.localPath)
       uploadResults.push({ success: true, fileName: icon.fileName })
     } catch (error) {
       console.error(`❌ 上传图标 ${icon.fileName} 失败:`, error)
@@ -628,51 +372,78 @@ const uploadPendingIconsToGitHub = async () => {
   console.log('✅ 所有图标上传完成')
 }
 
-// 获取favicon图标
-const tryFallbackServices = async (domain) => {
-  const iconUrl = `https://icon.bqb.cool/?url=${domain}`
-  
-  try {
-    // 测试图标可用性并下载缓存
-    await testImage(iconUrl)
-    const localPath = await downloadAndCacheIcon(iconUrl, domain)
-    
-    formData.value.icon = localPath
-    iconError.value = false
-  } catch (error) {
-    const errorMessage = `❌ 无法自动获取网站图标
-
-🔍 已尝试：图标服务 (https://icon.bqb.cool)
-
-💡 建议：
-• 手动输入：https://${domain}/favicon.ico
-• 其他服务：https://www.google.com/s2/favicons?domain=${domain}
-• 或下载图标后手动上传`
-
-    alert(errorMessage)
-  }
-}
-
-// 自动检测图标
+// 自动获取图标；下载失败但图片可显示时使用在线地址。
 const autoDetectIcon = async () => {
-  if (!formData.value.url) {
-    alert('请先输入站点地址')
+  if (fetchingIcon.value) return
+  if (!formData.value.url.trim()) {
+    iconStatus.value = '请先输入站点地址'
     return
   }
 
+  let url
   try {
-    const url = new URL(formData.value.url)
-    
-    // 清空之前的图标
-    formData.value.icon = ''
+    url = parseSiteUrl(formData.value.url)
+  } catch {
+    iconStatus.value = 'URL 格式不正确，请输入有效的站点地址'
+    return
+  }
+
+  const originalForm = formData.value
+  const originalUrl = originalForm.url
+  const originalIcon = originalForm.icon
+  const controller = new AbortController()
+  iconController = controller
+  fetchingIcon.value = true
+  iconStatus.value = ''
+
+  try {
+    const result = await fetchSiteIcon(url, controller.signal)
+    if (controller.signal.aborted || formData.value !== originalForm ||
+        originalForm.url !== originalUrl || originalForm.icon !== originalIcon) return
+
+    if (result.data) {
+      const domain = url.hostname
+      const fileName = `${domain}.${result.extension}`
+      const localPath = `/sitelogo/${fileName}`
+      const oldPreview = iconPreviews.value.get(localPath)
+      if (oldPreview) URL.revokeObjectURL(oldPreview)
+      pendingIcons.value.set(localPath, {
+        arrayBuffer: result.data, fileName, localPath, domain,
+      })
+      iconPreviews.value.set(localPath, URL.createObjectURL(result.blob))
+      formData.value.icon = localPath
+      iconStatus.value = '图标已获取，保存到 GitHub 时会上传图标文件'
+    } else {
+      formData.value.icon = result.src
+      iconStatus.value = '图标已获取，将使用在线图标地址'
+    }
     iconError.value = false
-    
-    await tryFallbackServices(url.host)
-    
   } catch (error) {
-    alert('URL格式不正确，请检查输入的网址')
+    if (!controller.signal.aborted && formData.value === originalForm &&
+        originalForm.url === originalUrl && originalForm.icon === originalIcon) {
+      iconStatus.value = `${error.message}。原图标已保留。`
+    }
+  } finally {
+    if (iconController === controller) {
+      iconController = null
+      fetchingIcon.value = false
+    }
   }
 }
+
+const cancelIconRequest = () => {
+  iconController?.abort()
+  iconController = null
+  fetchingIcon.value = false
+  iconStatus.value = ''
+}
+
+watch(() => formData.value.url, cancelIconRequest, { flush: 'sync' })
+
+onBeforeUnmount(() => {
+  cancelIconRequest()
+  iconPreviews.value.forEach(preview => URL.revokeObjectURL(preview))
+})
 
 // 保存站点
 const saveSite = () => {
@@ -724,6 +495,7 @@ const saveSite = () => {
 
 // 关闭弹窗
 const closeModal = () => {
+  cancelIconRequest()
   showAddModal.value = false
   editingSite.value = null
   formData.value = {
@@ -752,13 +524,6 @@ const handleSave = async () => {
     // 然后保存站点数据
     emit('save')
 
-    // // 保存成功后清理预览缓存，释放内存
-    // iconPreviews.value.forEach((url) => {
-    //   URL.revokeObjectURL(url)
-    // })
-    // iconPreviews.value.clear()
-
-    // console.log('✅ 预览缓存已清理')
   } catch (error) {
     console.error('保存失败:', error)
     alert(`保存失败: ${error.message}`)
@@ -1124,6 +889,17 @@ watch(selectedCategoryId, () => {
 
 .auto-icon-btn:hover {
   background: #2980b9;
+}
+
+.auto-icon-btn:disabled {
+  opacity: 0.65;
+  cursor: wait;
+}
+
+.icon-status {
+  margin: 8px 0 0;
+  font-size: 13px;
+  color: #52616b;
 }
 
 .icon-preview {
