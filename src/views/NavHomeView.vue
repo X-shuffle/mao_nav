@@ -1,1053 +1,309 @@
 <template>
   <div class="nav-home">
-    <!-- 左侧边栏 -->
     <aside class="sidebar">
-      <!-- Logo区域 -->
-      <div class="logo-section">
-        <img src="/logo.png" alt="logo" class="logo" />
-        <h1 class="site-title">{{ title || '猫猫导航' }}</h1>
-      </div>
-
-      <!-- 分类导航 -->
-      <nav class="category-nav">
-        <h2 class="nav-title">分类导航</h2>
-                <ul class="category-list">
-          <li
-            v-for="category in categories"
-            :key="category.id"
-            class="category-item"
-            @click="scrollToCategory(category.id)"
-          >
-            <span class="category-icon">{{ category.icon }}</span>
-            <span class="category-name">{{ category.name }}</span>
+      <a class="brand" href="/" :aria-label="`${title || '猫猫导航'} 首页`">
+        <img src="/logo.png" alt="" width="38" height="38" />
+        <h1>{{ title || '猫猫导航' }}</h1>
+      </a>
+      <nav class="category-nav" aria-label="分类导航">
+        <p class="nav-label">分类导航 <span>{{ visibleCategories.length }}</span></p>
+        <ul class="category-list">
+          <li v-for="category in visibleCategories" :key="category.id">
+            <a :href="`#category-${category.id}`" class="category-link"
+              :class="{ active: activeCategoryId === category.id }"
+              :aria-current="activeCategoryId === category.id ? 'location' : undefined"
+              @click.prevent="scrollToCategory(category.id)">
+              <span class="category-emoji" aria-hidden="true">{{ category.icon }}</span>
+              <span class="category-label">{{ category.name }}</span>
+              <span class="category-count">{{ category.sites?.length || 0 }}</span>
+            </a>
           </li>
         </ul>
+        <p v-if="!loading && !visibleCategories.length" class="nav-empty">{{ isSearching ? '暂无匹配分类' : '暂无分类' }}</p>
       </nav>
-
-      <!-- 左侧边栏底部信息 -->
-      <div class="sidebar-footer">
-        <a
-          href="https://github.com/X-shuffle/mao_nav"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="github-link"
-          title="查看源代码"
-        >
-          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
-            <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-          </svg>
-          <span>开源不易，Star一下吧！⭐</span>
-        </a>
-      </div>
+      <a class="github-link" href="https://github.com/X-shuffle/mao_nav" target="_blank" rel="noopener noreferrer">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.3 3.44 9.8 8.2 11.39.6.11.8-.26.8-.58v-2.23c-3.34.73-4.03-1.42-4.03-1.42-.55-1.39-1.33-1.76-1.33-1.76-1.09-.74.08-.73.08-.73 1.2.08 1.84 1.24 1.84 1.24 1.07 1.83 2.8 1.3 3.49 1 .11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.33-5.47-5.93 0-1.31.47-2.38 1.24-3.22-.12-.3-.54-1.52.12-3.18 0 0 1-.32 3.3 1.23a11.5 11.5 0 0 1 6 0c2.29-1.55 3.3-1.23 3.3-1.23.65 1.66.24 2.88.12 3.18.77.84 1.23 1.91 1.23 3.22 0 4.6-2.8 5.62-5.48 5.92.43.37.82 1.1.82 2.22v3.29c0 .32.22.69.83.57A12 12 0 0 0 24 12C24 5.37 18.63 0 12 0Z"/></svg>
+        <span>查看开源项目</span><span aria-hidden="true">↗</span>
+      </a>
     </aside>
 
-    <!-- 右侧主内容区 -->
     <main class="main-content">
-                  <!-- 顶部搜索栏 -->
       <header class="search-header">
-        <div class="search-container">
-          <div class="search-engine-selector">
-            <img :src="searchEngines[selectedEngine].icon" :alt="selectedEngine" class="engine-logo" />
-            <select v-model="selectedEngine" class="engine-select">
+        <form class="search-container" role="search" @submit.prevent="handleSearch">
+          <div class="search-mode">
+            <svg v-if="selectedEngine === 'local'" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
+            <img v-else :src="searchEngines[selectedEngine].icon" alt="" width="18" height="18" />
+            <select v-model="selectedEngine" aria-label="搜索范围">
+              <option value="local">站内</option>
+              <option value="bing">Bing</option>
               <option value="google">Google</option>
               <option value="baidu">百度</option>
-              <option value="bing">Bing</option>
               <option value="duckduckgo">DuckDuckGo</option>
             </select>
           </div>
-          <input
-            type="text"
-            v-model="searchQuery"
-            :placeholder="searchEngines[selectedEngine].placeholder"
-            class="search-input"
-            @keyup.enter="handleSearch"
-          />
-        </div>
-
-        <!-- 移动端菜单按钮 -->
-        <button class="mobile-menu-btn" @click="toggleMobileMenu">
-          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M3 12H21M3 6H21M3 18H21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
-          </svg>
+          <input ref="searchInput" v-model="searchQuery" type="search" aria-label="搜索关键词"
+            :placeholder="selectedEngine === 'local' ? '搜索站点、描述或域名' : `使用 ${searchEngines[selectedEngine].name} 搜索`"
+            autocomplete="off" @keydown.esc.stop="searchQuery = ''" />
+          <button v-if="searchQuery" type="button" class="clear-search" aria-label="清空搜索" @click="clearSearch">×</button>
+          <kbd v-else class="search-shortcut" aria-hidden="true">/</kbd>
+          <button v-if="selectedEngine !== 'local'" type="submit" class="web-search" aria-label="在新标签页搜索">↗</button>
+        </form>
+        <button ref="menuButton" class="mobile-menu-btn" type="button" aria-label="打开分类导航" aria-controls="mobile-categories"
+          :aria-expanded="showMobileMenu" @click="openMobileMenu">
+          <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg>
         </button>
-
-        <!-- 移动端分类菜单 -->
-        <div class="mobile-menu" :class="{ active: showMobileMenu }">
-          <div class="mobile-menu-header">
-            <div class="header-left">
-              <h3>分类导航</h3>
-              <img :src="githubLogo" alt="GitHub" class="header-github-icon" @click="openGitHub" />
-            </div>
-            <button class="close-btn" @click="closeMobileMenu">×</button>
-          </div>
-                    <ul class="mobile-category-list">
-            <li
-              v-for="category in categories"
-              :key="category.id"
-              class="mobile-category-item"
-              @click="scrollToCategoryMobile(category.id)"
-            >
-              <span class="category-icon">{{ category.icon }}</span>
-              <span class="category-name">{{ category.name }}</span>
-            </li>
-          </ul>
-        </div>
-
-        <!-- 移动端菜单遮罩 -->
-        <div class="mobile-menu-overlay" :class="{ active: showMobileMenu }" @click="closeMobileMenu"></div>
       </header>
 
-      <!-- 导航内容区 -->
-      <div class="content-area">
-        <!-- 加载状态 -->
-        <div v-if="loading" class="loading">
-          <div class="loading-spinner"></div>
-          <p>加载中...</p>
-        </div>
-
-        <!-- 错误状态 -->
-        <div v-else-if="error" class="error">
-          <p>{{ error }}</p>
-          <button @click="fetchCategories" class="retry-btn">重试</button>
-        </div>
-
-                <!-- 分类内容 -->
+      <div ref="contentArea" class="content-area" @scroll.passive="scheduleActiveCategory">
+        <div v-if="loading" class="page-state" role="status">正在加载站点…</div>
+        <div v-else-if="error" class="page-state" role="alert"><p>{{ error }}</p><button class="primary-button" @click="fetchCategories">重新加载</button></div>
         <div v-else class="categories-container">
-          <section
-            v-for="category in categories"
-            :key="category.id"
-            class="category-section"
-            :id="`category-${category.id}`"
-          >
-            <h2 class="category-title">
-              <span class="category-icon">{{ category.icon }}</span>
-              <span class="category-name">{{ category.name }}</span>
-            </h2>
-
+          <div class="collection-summary" role="status" aria-live="polite" aria-atomic="true">
+            <p v-if="isSearching">找到 <strong>{{ visibleSiteCount }}</strong> 个站点 <span>· {{ visibleCategories.length }} 个分类</span></p>
+            <p v-else>收藏的好去处 <span>· {{ totalSites }} 个站点</span></p>
+            <button v-if="isSearching" class="text-button" @click="clearSearch">显示全部</button>
+          </div>
+          <div v-if="!visibleCategories.length" class="empty-state">
+            <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
+            <h2>{{ isSearching ? '没有找到匹配的站点' : '还没有收藏站点' }}</h2>
+            <p>{{ isSearching ? '试试更短的关键词，也可以切换搜索引擎到网上查找。' : '添加一些常用网站，让这里成为你的日常入口。' }}</p>
+            <button v-if="isSearching" class="primary-button" @click="clearSearch">清空搜索</button>
+          </div>
+          <section v-for="category in visibleCategories" :id="`category-${category.id}`" :key="category.id" class="category-section" :aria-labelledby="`heading-${category.id}`">
+            <div class="category-heading">
+              <h2 :id="`heading-${category.id}`"><span aria-hidden="true">{{ category.icon }}</span>{{ category.name }}</h2>
+              <span>{{ category.sites?.length || 0 }} 个站点</span>
+            </div>
             <div class="sites-grid">
-              <a
-                v-for="site in category.sites"
-                :key="site.id"
-                :href="site.url"
-                target="_blank"
-                rel="noopener noreferrer"
-                class="site-card"
-              >
-                <div class="site-icon">
-                  <img :src="site.icon" :alt="site.name" @error="handleImageError" />
-                </div>
-                <div class="site-info">
-                  <h3 class="site-name">{{ site.name }}</h3>
-                  <p class="site-description">{{ site.description }}</p>
-                </div>
+              <a v-for="site in category.sites" :key="site.id" :href="site.url" target="_blank" rel="noopener noreferrer" class="site-card"
+                :title="[site.name, site.description, getSiteHost(site.url)].filter(Boolean).join(' · ')">
+                <SiteIcon :src="site.icon" :name="site.name" />
+                <div class="site-info"><h3>{{ site.name }}</h3><p>{{ site.description || getSiteHost(site.url) }}</p></div>
+                <svg class="site-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
               </a>
             </div>
+            <p v-if="!category.sites?.length" class="category-empty">这个分类还没有站点</p>
           </section>
-
-          <!-- 页面底部信息 -->
-          <footer class="page-footer" hidden="true">
-            <div class="footer-content">
-              <div class="footer-info">
-                <h3>{{ title || '猫猫导航' }}</h3>
-                <p>一个简洁、美观的导航网站，收录优质网站资源</p>
-              </div>
-
-              <div class="footer-links">
-                <a
-                  href="https://github.com/X-shuffle/mao_nav"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  class="footer-link"
-                >
-                  <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                    <path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.599.111.793-.261.793-.577v-2.234c-3.338.726-4.033-1.416-4.033-1.416-.546-1.387-1.333-1.756-1.333-1.756-1.089-.745.083-.729.083-.729 1.205.084 1.839 1.237 1.839 1.237 1.07 1.834 2.807 1.304 3.492.997.107-.775.418-1.305.762-1.604-2.665-.305-5.467-1.334-5.467-5.931 0-1.311.469-2.381 1.236-3.221-.124-.303-.535-1.524.117-3.176 0 0 1.008-.322 3.301 1.23.957-.266 1.983-.399 3.003-.404 1.02.005 2.047.138 3.006.404 2.291-1.552 3.297-1.23 3.297-1.23.653 1.653.242 2.874.118 3.176.77.84 1.235 1.911 1.235 3.221 0 4.609-2.807 5.624-5.479 5.921.43.372.823 1.102.823 2.222v3.293c0 .319.192.694.801.576 4.765-1.589 8.199-6.086 8.199-11.386 0-6.627-5.373-12-12-12z"/>
-                  </svg>
-                  开源项目
-                </a>
-              </div>
-            </div>
-
-            <div class="footer-bottom">
-              <p>&copy; {{ new Date().getFullYear() }} 猫猫导航 - 由 <a href="https://github.com/X-shuffle" target="_blank" rel="noopener noreferrer">X-shuffle</a> 用 ❤️ 制作</p>
-              <p class="footer-tech">基于 Vue.js 构建 | <a href="https://github.com/X-shuffle/mao_nav" target="_blank" rel="noopener noreferrer">查看源代码</a></p>
-            </div>
-          </footer>
+          <p v-if="visibleCategories.length" class="collection-end">{{ title || '猫猫导航' }} · 发现值得收藏的网站</p>
         </div>
       </div>
     </main>
+
+    <dialog id="mobile-categories" ref="menuDialog" class="mobile-menu" aria-labelledby="mobile-menu-title" @close="showMobileMenu = false" @cancel="showMobileMenu = false" @click="handleDialogClick">
+      <div class="mobile-menu-header"><h2 id="mobile-menu-title">分类导航</h2><button type="button" aria-label="关闭分类导航" @click="closeMobileMenu">×</button></div>
+      <nav aria-label="手机分类导航"><ul class="category-list"><li v-for="category in visibleCategories" :key="category.id">
+        <a :href="`#category-${category.id}`" class="category-link" :class="{ active: activeCategoryId === category.id }"
+          :aria-current="activeCategoryId === category.id ? 'location' : undefined" @click.prevent="scrollToCategoryMobile(category.id)">
+          <span class="category-emoji" aria-hidden="true">{{ category.icon }}</span><span class="category-label">{{ category.name }}</span><span class="category-count">{{ category.sites?.length || 0 }}</span>
+        </a>
+      </li></ul><p v-if="!loading && !visibleCategories.length" class="nav-empty">{{ isSearching ? '暂无匹配分类' : '暂无分类' }}</p></nav>
+    </dialog>
   </div>
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from 'vue'
+import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useNavigation } from '@/apis/useNavigation.js'
-// 导入搜索引擎logo图片
+import { filterCategories, getSiteHost } from '@/apis/navigationSearch.js'
+import SiteIcon from '@/components/SiteIcon.vue'
 import googleLogo from '@/assets/goolge.png'
 import baiduLogo from '@/assets/baidu.png'
 import bingLogo from '@/assets/bing.png'
 import duckLogo from '@/assets/duck.png'
-// 导入GitHub logo
-import githubLogo from '@/assets/github.png'
 
-// 使用导航API
 const { categories, title, loading, error, fetchCategories } = useNavigation()
-
-// 响应式数据
-const searchQuery = ref('') // 搜索查询
-const selectedEngine = ref('bing') // 选中的搜索引擎
-const showMobileMenu = ref(false) // 移动端菜单显示状态
-
-// 搜索引擎配置
+const searchQuery = ref('')
+const selectedEngine = ref('local')
+const activeCategoryId = ref('')
+const contentArea = ref(null)
+const searchInput = ref(null)
+const menuDialog = ref(null)
+const showMobileMenu = ref(false)
+const menuButton = ref(null)
+let scrollFrame = 0
 const searchEngines = {
-  google: {
-    url: 'https://www.google.com/search?q=',
-    icon: googleLogo,
-    placeholder: 'Google 搜索'
-  },
-  baidu: {
-    url: 'https://www.baidu.com/s?wd=',
-    icon: baiduLogo,
-    placeholder: '百度一下'
-  },
-  bing: {
-    url: 'https://www.bing.com/search?q=',
-    icon: bingLogo,
-    placeholder: 'Bing (点logo切换搜索引擎)'
-  },
-  duckduckgo: {
-    url: 'https://duckduckgo.com/?q=',
-    icon: duckLogo,
-    placeholder: 'DuckDuckGo 搜索'
-  }
+  google: { name: 'Google', url: 'https://www.google.com/search?q=', icon: googleLogo },
+  baidu: { name: '百度', url: 'https://www.baidu.com/s?wd=', icon: baiduLogo },
+  bing: { name: 'Bing', url: 'https://www.bing.com/search?q=', icon: bingLogo },
+  duckduckgo: { name: 'DuckDuckGo', url: 'https://duckduckgo.com/?q=', icon: duckLogo },
 }
+const isSearching = computed(() => selectedEngine.value === 'local' && !!searchQuery.value.trim())
+const visibleCategories = computed(() => filterCategories(categories.value, isSearching.value ? searchQuery.value : ''))
+const totalSites = computed(() => categories.value.reduce((sum, category) => sum + (category.sites?.length || 0), 0))
+const visibleSiteCount = computed(() => visibleCategories.value.reduce((sum, category) => sum + (category.sites?.length || 0), 0))
 
-// 自定义固定时间滚动函数
-const smoothScrollTo = (container, targetTop, duration = 600) => {
-  const startTop = container.scrollTop
-  const distance = targetTop - startTop
-  let startTime = null
-
-  const animateScroll = (currentTime) => {
-    if (startTime === null) startTime = currentTime
-    const timeElapsed = currentTime - startTime
-    const progress = Math.min(timeElapsed / duration, 1)
-
-    // 使用缓动函数 (easeInOutCubic)
-    const ease = progress < 0.5
-      ? 4 * progress * progress * progress
-      : 1 - Math.pow(-2 * progress + 2, 3) / 2
-
-    container.scrollTop = startTop + distance * ease
-
-    if (progress < 1) {
-      requestAnimationFrame(animateScroll)
-    }
+const updateActiveCategory = () => {
+  scrollFrame = 0
+  const container = contentArea.value
+  const sections = container?.querySelectorAll('.category-section')
+  if (!sections?.length) { activeCategoryId.value = ''; return }
+  let current = sections[0]
+  const top = container.getBoundingClientRect().top + 40
+  for (const section of sections) {
+    if (section.getBoundingClientRect().top <= top) current = section
+    else break
   }
-
-  requestAnimationFrame(animateScroll)
+  if (container.scrollHeight > container.clientHeight && container.scrollTop + container.clientHeight >= container.scrollHeight - 2) current = sections[sections.length - 1]
+  activeCategoryId.value = current.id.slice('category-'.length)
 }
-
-// 滚动到指定分类
+const scheduleActiveCategory = () => {
+  if (!scrollFrame) scrollFrame = requestAnimationFrame(updateActiveCategory)
+}
 const scrollToCategory = (categoryId) => {
+  const container = contentArea.value
   const element = document.getElementById(`category-${categoryId}`)
-  const container = document.querySelector('.content-area')
-
-  if (element && container) {
-    // 检查是否为移动端
-    const isMobile = window.innerWidth <= 768
-
-    let targetTop = 0
-
-    if (isMobile) {
-      // 移动端：在 content-area 容器内滚动
-      const elementOffsetTop = element.offsetTop
-      const searchHeaderHeight = 80 // 固定高度，因为搜索框是fixed定位
-      targetTop = elementOffsetTop - searchHeaderHeight
-    } else {
-      // 桌面端：在容器内滚动
-      const searchHeader = document.querySelector('.search-header')
-      const elementOffsetTop = element.offsetTop
-      const searchHeaderHeight = searchHeader ? searchHeader.offsetHeight + 20 : 100
-      targetTop = elementOffsetTop - searchHeaderHeight
-    }
-
-    // 使用固定时间滚动（600毫秒）
-    smoothScrollTo(container, Math.max(0, targetTop), 600)
-  }
+  if (!container || !element) return
+  const top = element.getBoundingClientRect().top - container.getBoundingClientRect().top + container.scrollTop - 24
+  container.scrollTo({ top: Math.max(0, top), behavior: window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' })
 }
-
-// 处理搜索
+const clearSearch = () => { searchQuery.value = ''; searchInput.value?.focus() }
 const handleSearch = () => {
-  if (!searchQuery.value.trim()) return
-
-  const engine = searchEngines[selectedEngine.value]
-  const url = engine.url + encodeURIComponent(searchQuery.value)
-  window.open(url, '_blank')
+  if (selectedEngine.value === 'local' || !searchQuery.value.trim()) return
+  window.open(searchEngines[selectedEngine.value].url + encodeURIComponent(searchQuery.value.trim()), '_blank', 'noopener,noreferrer')
 }
-
-// 处理图片加载错误
-const handleImageError = (event) => {
-  event.target.style.display = 'none'
+const openMobileMenu = () => { menuDialog.value?.showModal(); showMobileMenu.value = true }
+const closeMobileMenu = () => { menuDialog.value?.close(); showMobileMenu.value = false; menuButton.value?.focus() }
+const handleDialogClick = (event) => {
+  if (event.target !== menuDialog.value) return
+  const rect = menuDialog.value.getBoundingClientRect()
+  if (event.clientX < rect.left || event.clientX > rect.right || event.clientY < rect.top || event.clientY > rect.bottom) closeMobileMenu()
 }
-
-// 移动端菜单控制
-const toggleMobileMenu = () => {
-  showMobileMenu.value = !showMobileMenu.value
-  // 控制body滚动
-  if (showMobileMenu.value) {
-    document.body.style.overflow = 'hidden'
-  } else {
-    document.body.style.overflow = ''
+const scrollToCategoryMobile = (id) => { closeMobileMenu(); scrollToCategory(id) }
+const handleKeyboard = (event) => {
+  if (event.defaultPrevented || event.isComposing || menuDialog.value?.open) return
+  const editing = event.target instanceof HTMLElement && (event.target.isContentEditable || /^(INPUT|TEXTAREA|SELECT)$/.test(event.target.tagName))
+  if (((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === 'k') || (event.key === '/' && !editing && !event.ctrlKey && !event.metaKey && !event.altKey)) {
+    event.preventDefault(); searchInput.value?.focus()
   }
 }
-
-const closeMobileMenu = () => {
-  showMobileMenu.value = false
-  // 恢复body滚动
-  document.body.style.overflow = ''
+const handleResize = () => {
+  if (window.innerWidth > 768 && menuDialog.value?.open) closeMobileMenu()
+  scheduleActiveCategory()
 }
-
-// 移动端分类滚动
-const scrollToCategoryMobile = (categoryId) => {
-  closeMobileMenu() // 先关闭菜单
-
-  // 稍微延迟一下再滚动，确保菜单关闭动画完成
-  setTimeout(() => {
-    scrollToCategory(categoryId)
-  }, 200)
-}
-
-// 打开GitHub项目页面
-const openGitHub = () => {
-  window.open('https://github.com/X-shuffle/mao_nav', '_blank')
-}
-
-// 组件挂载时获取数据
+watch(visibleCategories, async () => {
+  await nextTick()
+  contentArea.value?.scrollTo({ top: 0, behavior: 'instant' })
+  updateActiveCategory()
+})
 onMounted(() => {
   fetchCategories()
+  window.addEventListener('keydown', handleKeyboard)
+  window.addEventListener('resize', handleResize)
 })
-
-// 组件卸载时清理样式
 onUnmounted(() => {
-  // 确保卸载时恢复body滚动
-  document.body.style.overflow = ''
+  cancelAnimationFrame(scrollFrame)
+  window.removeEventListener('keydown', handleKeyboard)
+  window.removeEventListener('resize', handleResize)
 })
 </script>
 
 <style scoped>
 .nav-home {
+  --nav-ink: #243247;
+  --nav-muted: #5c6b7e;
+  --nav-accent: #2866af;
+  --nav-line: #e2e8f0;
   display: flex;
-  min-height: 100vh;
-  background-color: #f5f7fa;
-}
-
-/* 左侧边栏样式 */
-.sidebar {
-  width: 280px;
-  background-color: #2c3e50;
-  color: white;
-  padding: 0;
-  box-shadow: 2px 0 10px rgba(0, 0, 0, 0.1);
   height: 100vh;
-  overflow: hidden;
-  flex-shrink: 0;
+  height: 100dvh;
+  background: #f5f7fa;
+  color: var(--nav-ink);
 }
-
-.logo-section {
-  display: flex;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-}
-
-.logo {
-  width: 55px;
-  height: 55px;
-  border-radius: 12px;
-  margin-right: 15px;
-}
-
-.site-title {
-  font-size: 24px;
-  font-weight: 600;
-  margin: 0;
-  color: white;
-}
-
-.category-nav {
-  padding: 20px 0;
-  height: calc(100vh - 180px); /* 为底部留出空间 */
-  overflow-y: auto;
-}
-
-.nav-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 0 20px 15px;
-  color: #bdc3c7;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.category-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-}
-
-.category-item {
-  display: flex;
-  align-items: center;
-  padding: 12px 20px;
-  cursor: pointer;
-  transition: all 0.3s ease;
-  position: relative;
-}
-
-.category-item:hover {
-  background-color: rgba(255, 255, 255, 0.1);
-  box-shadow: inset 4px 0 0 #3498db;
-}
-
-.category-icon {
-  font-size: 18px;
-  margin-right: 12px;
-  width: 20px;
-  text-align: center;
-}
-
-.category-name {
-  font-size: 15px;
-  font-weight: 500;
-}
-
-/* 左侧边栏底部 */
-.sidebar-footer {
-  padding: 20px;
-  border-top: 1px solid rgba(255, 255, 255, 0.1);
-  margin-top: auto;
-}
-
-.github-link {
-  display: flex;
-  align-items: center;
-  color: #bdc3c7;
-  text-decoration: none;
-  padding: 8px 12px;
-  border-radius: 6px;
-  transition: all 0.3s ease;
-  font-size: 14px;
-}
-
-.github-link:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: white;
-  transform: translateY(-1px);
-}
-
-.github-link svg {
-  margin-right: 8px;
-  transition: transform 0.3s ease;
-}
-
-.github-link:hover svg {
-  transform: scale(1.1);
-}
-
-/* 右侧主内容区样式 */
-.main-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  overflow: hidden;
-}
-
-.search-header {
-  background: white;
-  padding: 20px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-  position: sticky;
-  top: 0;
-  z-index: 100;
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.search-container {
-  display: flex;
-  max-width: 600px;
-  margin: 0 auto;
-  gap: 0;
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  flex: 1;
-}
-
+button, input, select { font: inherit; }
+button, a, input, select { -webkit-tap-highlight-color: transparent; }
+a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid var(--nav-accent); outline-offset: 4px; }
+.sidebar { display: flex; flex-direction: column; width: 240px; flex-shrink: 0; background: #2c3e50; color: #fff; }
+.brand { display: flex; gap: 12px; align-items: center; padding: 24px 20px; color: inherit; text-decoration: none; }
+.brand img { object-fit: cover; border-radius: 8px; }
+.brand h1 { font-size: 20px; font-weight: 600; letter-spacing: -0.02em; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.category-nav { flex: 1; min-height: 0; overflow-y: auto; padding: 12px; }
+.nav-label { display: flex; justify-content: space-between; margin: 0 10px 12px; font-size: 12px; font-weight: 600; color: #c4ceda; }
+.category-list { padding: 0; margin: 0; list-style: none; }
+.category-list li + li { margin-top: 4px; }
+.category-link { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 10px; border-radius: 8px; color: #dce4ed; text-decoration: none; transition: background-color 160ms ease, color 160ms ease; }
+.category-link:hover { background: #374d62; color: #fff; }
+.category-link.active { background: #405b74; color: #fff; }
+.category-link:focus-visible { outline-color: #9fc8ff; outline-offset: -2px; }
+.category-emoji { font-size: 18px; flex-shrink: 0; }
+.category-label { font-size: 14px; min-width: 0; flex: 1; }
+.category-count { font-size: 12px; font-variant-numeric: tabular-nums; opacity: 0.8; }
+.nav-empty { padding: 12px; color: #c4ceda; font-size: 13px; }
+.github-link { display: flex; gap: 10px; align-items: center; margin: 12px; padding: 14px 10px; border-top: 1px solid #526274; color: #dce4ed; font-size: 12px; text-decoration: none; }
+.github-link span:last-child { margin-left: auto; }
+.github-link:hover { color: #fff; }
+.main-content { display: flex; flex: 1; flex-direction: column; min-width: 0; }
+.search-header { display: flex; align-items: center; gap: 12px; padding: 18px 32px; background: #fff; border-bottom: 1px solid var(--nav-line); flex-shrink: 0; }
+.search-container { display: flex; flex: 1; min-width: 0; align-items: center; gap: 8px; width: 100%; max-width: 720px; min-height: 46px; margin: 0 auto; padding: 0 10px; border: 1px solid #d3dce8; border-radius: 10px; background: #fff; }
+.search-container:focus-within { outline: 2px solid var(--nav-accent); outline-offset: 2px; }
+.search-mode { display: flex; align-items: center; gap: 6px; padding-right: 8px; border-right: 1px solid var(--nav-line); color: var(--nav-muted); }
+.search-mode img { object-fit: contain; }
+.search-mode select { max-width: 120px; padding: 6px 2px; border: none; color: var(--nav-ink); background: #fff; cursor: pointer; font-size: 13px; }
+.search-container input { min-width: 0; flex: 1; padding: 10px 4px; border: none; outline: none; background: transparent; color: var(--nav-ink); font-size: 15px; }
+.search-container input::placeholder { color: var(--nav-muted); }
+.search-container input::-webkit-search-cancel-button { display: none; }
+.clear-search, .web-search { display: grid; place-items: center; width: 32px; height: 32px; flex-shrink: 0; border: none; background: transparent; border-radius: 6px; color: var(--nav-muted); cursor: pointer; font-size: 22px; }
+.clear-search:hover, .web-search:hover { background: #edf3fa; color: var(--nav-accent); }
+.search-shortcut { padding: 0 6px; border: 1px solid var(--nav-line); border-radius: 4px; color: var(--nav-muted); font-size: 12px; }
+.mobile-menu-btn { display: none; }
+.content-area { flex: 1; min-height: 0; overflow-y: auto; padding: 24px 32px 40px; }
+.categories-container { max-width: 1200px; margin: 0 auto; }
+.collection-summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; font-size: 13px; color: var(--nav-muted); }
+.collection-summary strong { font-weight: 600; color: var(--nav-ink); }
+.collection-summary span { margin-left: 4px; }
+.category-section { margin-bottom: 32px; }
+.category-heading { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 14px; }
+.category-heading h2 { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; text-wrap: balance; }
+.category-heading h2 span { font-size: 21px; }
+.category-heading > span { flex-shrink: 0; font-size: 12px; color: var(--nav-muted); }
+.sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.site-card { display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 88px; padding: 14px; border: 1px solid var(--nav-line); border-radius: 10px; background: #fff; color: inherit; text-decoration: none; transition: border-color 160ms ease, background-color 160ms ease; }
+.site-card:hover { border-color: #91b6df; background: #f9fbfe; }
+.site-info { flex: 1; min-width: 0; }
+.site-info h3 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; line-height: 1.5; }
+.site-info p { margin-top: 3px; color: var(--nav-muted); font-size: 12px; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
+.site-arrow { flex-shrink: 0; color: #657890; opacity: 0; transition: opacity 160ms ease; }
+.site-card:hover .site-arrow, .site-card:focus-visible .site-arrow { opacity: 1; }
+.category-empty { padding: 20px 0; color: var(--nav-muted); font-size: 14px; }
+.collection-end { margin-top: 40px; color: var(--nav-muted); text-align: center; font-size: 12px; }
+.page-state, .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 320px; text-align: center; color: var(--nav-muted); }
+.empty-state h2 { font-size: 20px; font-weight: 600; color: var(--nav-ink); }
+.empty-state p { max-width: 40ch; font-size: 14px; }
+.primary-button { padding: 10px 16px; border: none; border-radius: 8px; background: var(--nav-accent); color: #fff; cursor: pointer; font-size: 14px; }
+.primary-button:hover { background: #20558f; }
+.text-button { padding: 4px 0; border: none; color: var(--nav-accent); background: transparent; cursor: pointer; font-size: 13px; }
+.mobile-menu { position: fixed; inset: 0 0 0 auto; width: min(300px, 85vw); max-width: none; height: 100dvh; max-height: none; margin: 0; padding: 20px 14px; border: none; background: #2c3e50; color: #fff; }
+.mobile-menu::backdrop { background: rgb(20 31 46 / 45%); }
+.mobile-menu-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; padding: 0 8px; }
+.mobile-menu-header h2 { font-size: 18px; font-weight: 600; }
+.mobile-menu-header button { width: 36px; height: 36px; border: none; border-radius: 6px; background: #405b74; color: #fff; font-size: 24px; cursor: pointer; }
 @media (max-width: 768px) {
-  .search-container {
-    margin: 0;
-    max-width: none;
-  }
+  .sidebar { display: none; }
+  .search-header { padding: 14px 16px; gap: 10px; }
+  .search-container { padding: 0 8px; gap: 4px; min-height: 44px; }
+  .search-mode { gap: 4px; padding-right: 4px; }
+  .search-mode select { width: 76px; font-size: 12px; }
+  .search-mode svg, .search-mode img { display: none; }
+  .search-container input { font-size: 16px; padding-left: 6px; }
+  .search-shortcut { display: none; }
+  .mobile-menu-btn { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border: none; border-radius: 8px; background: #edf3fa; color: var(--nav-ink); cursor: pointer; }
+  .content-area { padding: 20px 16px 32px; }
+  .collection-summary { margin-bottom: 22px; font-size: 12px; }
+  .category-heading h2 { font-size: 18px; }
+  .category-heading > span { font-size: 11px; }
+  .sites-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .site-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px; min-height: 132px; }
+  .site-info { width: 100%; }
+  .site-info h3 { font-size: 14px; }
+  .site-info p { font-size: 12px; }
+  .site-arrow { display: none; }
+  .category-section { margin-bottom: 28px; }
 }
-
-.search-engine-selector {
-  position: relative;
-  display: flex;
-  align-items: center;
-  background: #f8f9fa;
-  border-right: 1px solid #e9ecef;
-  transition: background-color 0.2s ease;
+@media (max-width: 360px) {
+  .content-area { padding-right: 12px; padding-left: 12px; }
+  .site-card { padding: 12px; }
+  .search-header { padding-right: 12px; padding-left: 12px; }
 }
-
-.search-engine-selector:hover {
-  background: #e9ecef;
-}
-
-.engine-logo {
-  width: 24px;
-  height: 24px;
-  margin: 8px;
-  object-fit: contain;
-  pointer-events: none;
-  border-radius: 4px;
-}
-
-.engine-select {
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  opacity: 0;
-  cursor: pointer;
-  border: none;
-  outline: none;
-  background: transparent;
-}
-
-.search-input {
-  flex: 1;
-  border: none;
-  padding: 12px 16px;
-  font-size: 16px;
-  outline: none;
-  background: white;
-}
-
-.search-input::placeholder {
-  color: #95a5a6;
-}
-
-/* 移动端菜单按钮 */
-.mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
-  color: #2c3e50;
-  cursor: pointer;
-  padding: 8px;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.mobile-menu-btn:hover {
-  background: #f8f9fa;
-}
-
-/* 移动端菜单 */
-.mobile-menu {
-  position: fixed;
-  top: 0;
-  right: -100%;
-  width: 240px;
-  height: 100vh;
-  background: white;
-  box-shadow: -2px 0 10px rgba(0, 0, 0, 0.1);
-  z-index: 1001;
-  transition: right 0.3s ease;
-  overflow-y: auto;
-  overflow-x: hidden;
-  display: flex;
-  flex-direction: column;
-}
-
-.mobile-menu.active {
-  right: 0;
-}
-
-.mobile-menu-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e9ecef;
-  background: #2c3e50;
-  color: white;
-  flex-shrink: 0;
-}
-
-.header-left {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-}
-
-.mobile-menu-header h3 {
-  margin: 0;
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.header-github-icon {
-  width: 30px;
-  height: 30px;
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all 0.3s ease;
-  opacity: 0.8;
-}
-
-.header-github-icon:hover {
-  opacity: 1;
-  transform: scale(1.1);
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  color: white;
-  font-size: 24px;
-  cursor: pointer;
-  padding: 0;
-  width: 30px;
-  height: 30px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 4px;
-  transition: background-color 0.2s ease;
-}
-
-.close-btn:hover {
-  background: rgba(255, 255, 255, 0.1);
-}
-
-.mobile-category-list {
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  flex: 1;
-  overflow-y: auto;
-  padding-bottom: 160px; /* 增加底部内边距确保最后一项完全可见 */
-}
-
-.mobile-category-item {
-  display: flex;
-  align-items: center;
-  padding: 16px 20px;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
-  border-bottom: 1px solid #f8f9fa;
-}
-
-.mobile-category-item:hover {
-  background: #f8f9fa;
-}
-
-.mobile-category-item .category-icon {
-  font-size: 20px;
-  margin-right: 12px;
-  width: 24px;
-  text-align: center;
-}
-
-.mobile-category-item .category-name {
-  font-size: 16px;
-  font-weight: 500;
-  color: #2c3e50;
-}
-
-
-
-/* 移动端菜单遮罩 */
-.mobile-menu-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  z-index: 999;
-  opacity: 0;
-  visibility: hidden;
-  transition: opacity 0.3s ease, visibility 0.3s ease;
-}
-
-.mobile-menu-overlay.active {
-  opacity: 1;
-  visibility: visible;
-}
-
-/* 内容区域样式 */
-.content-area {
-  flex: 1;
-  padding: 30px;
-  padding-bottom: 400px;
-  overflow-y: auto;
-}
-
-.loading, .error {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  min-height: 200px;
-  color: #7f8c8d;
-}
-
-.loading-spinner {
-  width: 40px;
-  height: 40px;
-  border: 4px solid #ecf0f1;
-  border-top: 4px solid #3498db;
-  border-radius: 50%;
-  animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-.retry-btn {
-  margin-top: 10px;
-  padding: 8px 16px;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-}
-
-.categories-container {
-  max-width: 1200px;
-  margin: 0 auto;
-}
-
-.category-section {
-  margin-bottom: 50px;
-}
-
-.category-title {
-  font-size: 32px;
-  font-weight: 600;
-  margin-bottom: 25px;
-  color: #2c3e50;
-  display: flex;
-  align-items: center;
-}
-
-.category-title .category-icon {
-  font-size: 32px;
-  margin-right: 16px;
-}
-
-.category-title .category-name {
-  margin-left: 10px;
-  font-size: 26px;
-}
-
-.sites-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-  gap: 20px;
-}
-
-.site-card {
-  display: flex;
-  align-items: center;
-  background: white;
-  border-radius: 12px;
-  padding: 20px;
-  text-decoration: none;
-  color: inherit;
-  transition: all 0.3s ease;
-  border: 1px solid #e9ecef;
-  position: relative;
-  overflow: hidden;
-}
-
-.site-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: linear-gradient(135deg, rgba(52, 152, 219, 0.1), rgba(155, 89, 182, 0.1));
-  opacity: 0;
-  transition: opacity 0.3s ease;
-}
-
-.site-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-}
-
-.site-card:hover::before {
-  opacity: 1;
-}
-
-.site-icon {
-  width: 48px;
-  height: 48px;
-  margin-right: 16px;
-  border-radius: 8px;
-  overflow: hidden;
-  background: #f8f9fa;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
-.site-icon img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.site-info {
-  flex: 1;
-  position: relative;
-  z-index: 1;
-}
-
-.site-name {
-  font-size: 18px;
-  font-weight: 600;
-  margin: 0 0 5px 0;
-  color: #2c3e50;
-}
-
-.site-description {
-  font-size: 14px;
-  color: #7f8c8d;
-  margin: 0;
-  line-height: 1.4;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-/* 页面底部 */
-.page-footer {
-  margin-top: 60px;
-  padding: 40px 0;
-  background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-  border-radius: 12px;
-  border-top: 3px solid #3498db;
-}
-
-.footer-content {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 30px;
-  gap: 30px;
-}
-
-.footer-info h3 {
-  color: #2c3e50;
-  font-size: 20px;
-  font-weight: 600;
-  margin: 0 0 8px 0;
-}
-
-.footer-info p {
-  color: #7f8c8d;
-  font-size: 14px;
-  margin: 0;
-  line-height: 1.5;
-}
-
-.footer-links {
-  display: flex;
-  gap: 15px;
-}
-
-.footer-link {
-  display: flex;
-  align-items: center;
-  color: #3498db;
-  text-decoration: none;
-  padding: 8px 16px;
-  border-radius: 20px;
-  background: white;
-  border: 1px solid #e9ecef;
-  transition: all 0.3s ease;
-  font-size: 14px;
-  font-weight: 500;
-}
-
-.footer-link:hover {
-  background: #3498db;
-  color: white;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
-}
-
-.footer-link svg {
-  margin-right: 6px;
-  transition: transform 0.3s ease;
-}
-
-.footer-link:hover svg {
-  transform: scale(1.1);
-}
-
-.footer-bottom {
-  border-top: 1px solid #e9ecef;
-  padding-top: 20px;
-  text-align: center;
-}
-
-.footer-bottom p {
-  color: #7f8c8d;
-  font-size: 13px;
-  margin: 5px 0;
-  line-height: 1.4;
-}
-
-.footer-bottom a {
-  color: #3498db;
-  text-decoration: none;
-  font-weight: 500;
-  transition: color 0.3s ease;
-}
-
-.footer-bottom a:hover {
-  color: #2980b9;
-  text-decoration: underline;
-}
-
-.footer-tech {
-  font-size: 12px !important;
-  opacity: 0.8;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .nav-home {
-    flex-direction: column;
-    height: 100vh;
-    height: 100svh; /* 使用动态视口高度 */
-    overflow: hidden;
-  }
-
-  .sidebar {
-    display: none; /* 在移动端隐藏左侧边栏 */
-  }
-
-  .main-content {
-    flex: 1;
-    height: 100vh;
-    height: 100svh; /* 使用动态视口高度，更准确 */
-    margin-left: 0;
-    display: flex;
-    flex-direction: column;
-    overflow: hidden;
-  }
-
-  .search-header {
-    padding: 15px 20px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    z-index: 500;
-    background: white;
-    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-  }
-
-  .content-area {
-    flex: 1;
-    padding: 20px 15px;
-    padding-top: 100px; /* 为固定的搜索框留出空间 */
-    padding-bottom: 300px; /* 增加底部padding确保内容可以完全滚动 */
-    overflow-y: auto;
-    -webkit-overflow-scrolling: touch; /* iOS平滑滚动 */
-  }
-
-  .mobile-menu-btn {
-    display: block; /* 在移动端显示菜单按钮 */
-    flex-shrink: 0;
-  }
-
-  .sites-grid {
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-  }
-
-  .site-card {
-    padding: 12px;
-    flex-direction: column;
-    text-align: center;
-  }
-
-  .site-card .site-icon {
-    margin-right: 0;
-    margin-bottom: 8px;
-  }
-
-  .site-card .site-name {
-    font-size: 15px;
-  }
-
-  .site-card .site-description {
-    font-size: 12px;
-  }
-
-  .category-title {
-    font-size: 24px;
-    margin-bottom: 20px;
-  }
-
-  .category-title .category-icon {
-    font-size: 28px;
-    margin-right: 12px;
-  }
-
-  .category-title .category-name {
-    font-size: 22px;
-  }
-
-  /* 移动端页面底部 */
-  .page-footer {
-    margin-top: 40px;
-    padding: 30px 20px;
-  }
-
-  .footer-content {
-    flex-direction: column;
-    gap: 20px;
-    text-align: center;
-  }
-
-  .footer-links {
-    justify-content: center;
-  }
-
-  .footer-bottom {
-    padding-top: 15px;
-  }
-
-  .footer-bottom p {
-    font-size: 12px;
-  }
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; scroll-behavior: auto !important; }
 }
 </style>
