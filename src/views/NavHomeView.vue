@@ -285,7 +285,7 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .search-shortcut { padding: 0 6px; border: 1px solid var(--nav-line); border-radius: 4px; color: var(--nav-muted); font-size: 12px; }
 .mobile-menu-btn { display: none; }
 .content-area { flex: 1; min-height: 0; overflow-y: auto; padding: 24px 32px 40px; }
-.categories-container { max-width: 1200px; margin: 0 auto; }
+.categories-container { max-width: 1320px; margin: 0 auto; }
 .collection-summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; font-size: 13px; color: var(--nav-muted); }
 .collection-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
 .view-switch { display: flex; padding: 3px; background: #e9eef5; border-radius: 7px; }
@@ -301,7 +301,7 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .category-heading h2 { display: flex; align-items: center; gap: 10px; font-size: 19px; font-weight: 600; text-wrap: balance; }
 .category-heading h2 span { font-size: 21px; }
 .category-heading > span { flex-shrink: 0; font-size: 12px; color: var(--nav-muted); }
-.sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
+.sites-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 16px; }
 .category-empty { padding: 20px 0; color: var(--nav-muted); font-size: 14px; }
 .collection-end { margin-top: 40px; color: var(--nav-muted); text-align: center; font-size: 12px; }
 .page-state, .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 320px; text-align: center; color: var(--nav-muted); }
@@ -315,6 +315,9 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .mobile-menu-header { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 20px; padding: 0 8px; }
 .mobile-menu-header h2 { font-size: 18px; font-weight: 600; }
 .mobile-menu-header button { width: 36px; height: 36px; border: none; border-radius: 6px; background: #405b74; color: #fff; font-size: 24px; cursor: pointer; }
+@media (min-width: 769px) and (max-width: 1100px) {
+  .sites-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
 @media (max-width: 768px) {
   .sidebar { display: none; }
   .search-header { padding: 14px 16px; gap: 10px; }
