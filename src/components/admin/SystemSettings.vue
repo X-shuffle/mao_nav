@@ -1,19 +1,19 @@
 <template>
   <div class="system-settings">
     <div class="settings-header">
-      <h2>⚙️ 系统设置</h2>
+      <h2>系统设置</h2>
       <p>管理导航站的系统配置和GitHub集成</p>
     </div>
 
     <!-- GitHub连接状态 -->
     <div class="settings-section">
-      <h3>🔗 GitHub 集成状态</h3>
+      <h3>GitHub 集成状态</h3>
       <div class="github-status" :class="{ connected: connectionStatus?.connected }">
         <div class="status-info">
           <div class="status-indicator">
             <span class="status-dot" :class="{ active: connectionStatus?.connected }"></span>
             <span class="status-text">
-              {{ connectionStatus?.connected ? 'GitHub 连接正常' : 'GitHub 连接失败' }}
+              {{ testing ? '正在检查连接…' : connectionStatus?.connected ? 'GitHub 连接正常' : connectionStatus ? 'GitHub 连接失败' : '尚未检查连接' }}
             </span>
           </div>
           <div v-if="connectionStatus?.connected" class="repo-info">
@@ -29,7 +29,7 @@
         </div>
         <div class="status-actions">
           <button @click="testConnection" :disabled="testing" class="test-btn">
-            {{ testing ? '测试中...' : '🔄 重新测试' }}
+            {{ testing ? '测试中...' : '重新测试' }}
           </button>
         </div>
       </div>
@@ -37,14 +37,14 @@
 
     <!-- 网站设置 -->
     <div class="settings-section">
-      <h3>🌐 网站设置</h3>
+      <h3>网站设置</h3>
       <div class="website-settings">
         <!-- 网站标题设置 -->
         <div class="setting-group">
-          <label>网站标题:</label>
+          <label for="website-title">网站标题</label>
           <div class="title-input-group">
             <input
-              v-model="websiteTitle"
+              id="website-title" v-model="websiteTitle"
               type="text"
               placeholder="请输入网站标题"
               class="title-input"
@@ -55,7 +55,7 @@
               :disabled="titleSaving || !websiteTitle.trim()"
               class="save-title-btn"
             >
-              {{ titleSaving ? '保存中...' : '💾 保存标题' }}
+              {{ titleSaving ? '保存中...' : '保存标题' }}
             </button>
           </div>
           <p class="setting-description">当前标题: {{ currentTitle || '未设置' }}</p>
@@ -92,7 +92,7 @@
                 style="display: none"
               >
               <button @click="selectLogo" class="select-logo-btn">
-                📁 选择PNG文件
+                选择 PNG 文件
               </button>
               <button
                 @click="saveLogoToGitHub"
@@ -100,7 +100,7 @@
                 class="save-logo-btn"
                 v-if="selectedLogoFile"
               >
-                {{ logoSaving ? '上传中...' : '🚀 上传Logo' }}
+                {{ logoSaving ? '上传中...' : '上传 Logo' }}
               </button>
             </div>
           </div>
@@ -110,8 +110,8 @@
     </div>
 
     <!-- 环境变量配置 -->
-    <div class="settings-section">
-      <h3>🌍 环境变量配置</h3>
+    <details class="settings-section">
+      <summary>环境变量配置</summary>
       <div class="env-config">
         <div class="config-item">
           <label>管理员密钥 (VITE_ADMIN_PASSWORD):</label>
@@ -146,11 +146,11 @@
           </div>
         </div>
       </div>
-    </div>
+    </details>
 
     <!-- 配置说明 -->
-    <div class="settings-section">
-      <h3>📖 配置说明</h3>
+    <details class="settings-section">
+      <summary>配置说明</summary>
       <div class="config-guide">
         <div class="guide-step">
           <h4>1. 获取 GitHub Personal Access Token</h4>
@@ -212,11 +212,11 @@ VITE_GITHUB_BRANCH=master</code></pre>
           </ul>
         </div>
       </div>
-    </div>
+    </details>
 
     <!-- 系统信息 -->
-    <div class="settings-section">
-      <h3>ℹ️ 系统信息</h3>
+    <details class="settings-section">
+      <summary>系统信息</summary>
       <div class="system-info">
         <div class="info-grid">
           <div class="info-item">
@@ -237,7 +237,7 @@ VITE_GITHUB_BRANCH=master</code></pre>
           </div>
         </div>
       </div>
-    </div>
+    </details>
 
     <!-- 自定义弹框 -->
     <CustomDialog

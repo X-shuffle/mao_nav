@@ -1,23 +1,25 @@
 <template>
   <div class="site-manager">
     <div class="manager-header">
-      <h2>🌐 站点管理</h2>
+      <h2>站点管理</h2>
       <div class="header-actions">
-        <select v-model="selectedCategoryId" class="category-filter">
+        <input v-model="searchQuery" type="search" class="search-input" aria-label="搜索站点" placeholder="搜索名称、网址或描述" />
+        <select aria-label="筛选分类" v-model="selectedCategoryId" class="category-filter">
           <option value="">所有分类</option>
           <option v-for="category in categories" :key="category.id" :value="category.id">
             {{ category.icon }} {{ category.name }}
           </option>
         </select>
         <button @click="showAddModal = true" class="add-btn">
-          ➕ 添加站点
+          ＋ 添加站点
         </button>
         <button @click="handleSave" :disabled="loading" class="save-btn">
-          {{ loading ? '保存中...' : '💾 保存到GitHub' }}
+          {{ loading ? '保存中...' : '保存到 GitHub' }}
         </button>
       </div>
     </div>
 
+    <p v-if="saveError" role="alert" class="error-message">{{ saveError }}</p>
     <!-- 统计信息 -->
     <div class="stats-bar">
       <div class="stat-item">
@@ -35,6 +37,7 @@
     </div>
 
     <!-- 站点列表 -->
+    <p v-if="!filteredSites.length" class="empty-state">{{ totalSites ? '没有匹配的站点，试试其他关键词或分类。' : '还没有站点，点击“添加站点”开始整理。' }}</p>
     <div class="sites-list">
       <div
         v-for="site in paginatedSites"
@@ -43,7 +46,7 @@
       >
         <div class="site-info">
           <div class="site-icon">
-            <img :src="getIconDisplayUrl(site.icon)" :alt="site.name" @error="handleImageError">
+            <SiteIcon :src="getIconDisplayUrl(site.icon)" :name="site.name" />
           </div>
           <div class="site-details">
             <h3>{{ site.name }}</h3>
@@ -58,10 +61,10 @@
         </div>
         <div class="site-actions">
           <button @click="editSite(site)" class="edit-btn">
-            ✏️ 编辑
+            编辑
           </button>
           <button @click="deleteSite(site)" class="delete-btn">
-            🗑️ 删除
+            删除
           </button>
         </div>
       </div>
@@ -89,18 +92,12 @@
     </div>
 
     <!-- 添加/编辑站点弹窗 -->
-    <div v-if="showAddModal || editingSite" class="modal-overlay">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h3>{{ editingSite ? '编辑站点' : '添加站点' }}</h3>
-          <button @click="closeModal" class="close-btn">✕</button>
-        </div>
-
+    <AdminModal :visible="!!(showAddModal || editingSite)" :title="editingSite ? '编辑站点' : '添加站点'" @close="closeModal">
         <form @submit.prevent="saveSite" class="site-form">
           <div class="form-row">
             <div class="form-group">
-              <label>站点名称 *:</label>
-              <input
+              <label for="sitemanager-1">站点名称 *</label>
+              <input id="sitemanager-1"
                 v-model="formData.name"
                 required
                 placeholder="请输入站点名称"
@@ -108,8 +105,8 @@
               >
             </div>
             <div class="form-group">
-              <label>所属分类 *:</label>
-              <select v-model="formData.categoryId" required class="form-input">
+              <label for="sitemanager-2">所属分类 *</label>
+              <select id="sitemanager-2" v-model="formData.categoryId" required class="form-input">
                 <option value="">请选择分类</option>
                 <option v-for="category in categories" :key="category.id" :value="category.id">
                   {{ category.icon }} {{ category.name }}
@@ -119,8 +116,8 @@
           </div>
 
           <div class="form-group">
-            <label>站点地址 *:</label>
-            <input
+            <label for="sitemanager-3">站点地址 *</label>
+            <input id="sitemanager-3"
               v-model="formData.url"
               type="url"
               required
@@ -130,8 +127,8 @@
           </div>
 
           <div class="form-group">
-            <label>站点描述:</label>
-            <textarea
+            <label for="sitemanager-4">站点描述</label>
+            <textarea id="sitemanager-4"
               v-model="formData.description"
               placeholder="请输入站点描述"
               class="form-textarea"
@@ -140,16 +137,16 @@
           </div>
 
           <div class="form-group">
-            <label>站点图标:</label>
+            <label for="sitemanager-5">站点图标</label>
             <div class="icon-input-group">
-              <input
+              <input id="sitemanager-5"
                 v-model="formData.icon"
                 @input="cancelIconRequest"
                 placeholder="图标URL或使用自动获取"
                 class="form-input"
               >
               <button type="button" @click="autoDetectIcon" :disabled="fetchingIcon" class="auto-icon-btn">
-                {{ fetchingIcon ? '获取中...' : '🔍 自动获取' }}
+                {{ fetchingIcon ? '获取中...' : '自动获取' }}
               </button>
             </div>
             <p v-if="iconStatus" role="status" class="icon-status">{{ iconStatus }}</p>
@@ -158,6 +155,7 @@
             </div>
           </div>
 
+          <p v-if="formError" role="alert" class="error-message">{{ formError }}</p>
           <div class="form-actions">
             <button type="button" @click="closeModal" class="cancel-btn">取消</button>
             <button type="submit" class="submit-btn">
@@ -165,12 +163,15 @@
             </button>
           </div>
         </form>
-      </div>
-    </div>
+    </AdminModal>
+    <CustomDialog :visible="!!pendingDelete" type="error" title="删除站点" :message="`确认删除“${pendingDelete?.name || ''}”？保存到 GitHub 后才会同步到网站。`" show-cancel confirm-text="确认删除" @confirm="confirmDelete" @cancel="pendingDelete = null" @close="pendingDelete = null" />
   </div>
 </template>
 
 <script setup>
+import AdminModal from './AdminModal.vue'
+import SiteIcon from '../SiteIcon.vue'
+import CustomDialog from './CustomDialog.vue'
 import { ref, computed, watch, onBeforeUnmount } from 'vue'
 import { useGitHubAPI } from '../../apis/useGitHubAPI.js'
 import { fetchSiteIcon, parseSiteUrl } from '../../apis/siteIcon.js'
@@ -206,6 +207,9 @@ const iconPreviews = ref(new Map())
 
 // 分页和筛选
 const selectedCategoryId = ref('')
+const searchQuery = ref('')
+const formError = ref('')
+const saveError = ref('')
 const currentPage = ref(1)
 const pageSize = 10
 
@@ -263,10 +267,10 @@ const allSites = computed(() => {
 const totalSites = computed(() => allSites.value.length)
 
 const filteredSites = computed(() => {
-  if (!selectedCategoryId.value) {
-    return allSites.value
-  }
-  return allSites.value.filter(site => site.categoryId === selectedCategoryId.value)
+  const query = searchQuery.value.trim().toLocaleLowerCase()
+  return allSites.value.filter(site =>
+    (!selectedCategoryId.value || site.categoryId === selectedCategoryId.value) &&
+    (!query || [site.name, site.url, site.description].join(' ').toLocaleLowerCase().includes(query)))
 })
 
 const totalPages = computed(() => Math.ceil(filteredSites.value.length / pageSize))
@@ -310,15 +314,13 @@ const editSite = (site) => {
   iconError.value = false
 }
 
-// 删除站点
-const deleteSite = (site) => {
-  if (confirm(`确定要删除站点"${site.name}"吗？`)) {
-    const category = localCategories.value.find(cat => cat.id === site.categoryId)
-    if (category && category.sites) {
-      category.sites = category.sites.filter(s => s.id !== site.id)
-      syncToParent()
-    }
-  }
+const pendingDelete = ref(null)
+const deleteSite = (site) => { pendingDelete.value = site }
+const confirmDelete = () => {
+  const category = localCategories.value.find(cat => cat.id === pendingDelete.value.categoryId)
+  if (category?.sites) category.sites = category.sites.filter(site => site.id !== pendingDelete.value.id)
+  syncToParent()
+  pendingDelete.value = null
 }
 
 // 上传所有待处理的图标到GitHub（串行上传避免冲突）
@@ -449,7 +451,7 @@ onBeforeUnmount(() => {
 const saveSite = () => {
   const category = localCategories.value.find(cat => cat.id === formData.value.categoryId)
   if (!category) {
-    alert('请选择有效的分类')
+    formError.value = '请选择有效的分类'
     return
   }
 
@@ -489,6 +491,7 @@ const saveSite = () => {
     category.sites.push(newSite)
   }
 
+  formError.value = ''
   syncToParent()
   closeModal()
 }
@@ -496,6 +499,7 @@ const saveSite = () => {
 // 关闭弹窗
 const closeModal = () => {
   cancelIconRequest()
+  formError.value = ''
   showAddModal.value = false
   editingSite.value = null
   formData.value = {
@@ -508,13 +512,9 @@ const closeModal = () => {
   iconError.value = false
 }
 
-// 处理图片错误
-const handleImageError = (event) => {
-  event.target.style.display = 'none'
-}
-
 // 处理保存操作
 const handleSave = async () => {
+  saveError.value = ''
   try {
     // 先上传待处理的图标文件
     if (pendingIcons.value.size > 0) {
@@ -526,467 +526,13 @@ const handleSave = async () => {
 
   } catch (error) {
     console.error('保存失败:', error)
-    alert(`保存失败: ${error.message}`)
+    saveError.value = `保存失败：${error.message}`
   }
 }
 
 // 重置分页
-watch(selectedCategoryId, () => {
+watch([selectedCategoryId, searchQuery], () => {
   currentPage.value = 1
 })
+watch(totalPages, pages => { currentPage.value = Math.min(currentPage.value, Math.max(1, pages)) })
 </script>
-
-<style scoped>
-.site-manager {
-  padding: 20px 0;
-}
-
-.manager-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-  padding-bottom: 20px;
-  border-bottom: 2px solid #e9ecef;
-}
-
-.manager-header h2 {
-  color: #2c3e50;
-  margin: 0;
-  font-size: 24px;
-}
-
-.header-actions {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-}
-
-.category-filter {
-  padding: 8px 12px;
-  border: 2px solid #e1e1e1;
-  border-radius: 4px;
-  font-size: 14px;
-  background: white;
-  cursor: pointer;
-}
-
-.add-btn, .save-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 6px;
-  font-weight: 500;
-  cursor: pointer;
-  transition: all 0.3s ease;
-}
-
-.add-btn {
-  background: #27ae60;
-  color: white;
-}
-
-.add-btn:hover {
-  background: #219a52;
-}
-
-.save-btn {
-  background: #3498db;
-  color: white;
-}
-
-.save-btn:hover:not(:disabled) {
-  background: #2980b9;
-}
-
-.save-btn:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
-}
-
-.stats-bar {
-  display: flex;
-  gap: 20px;
-  margin-bottom: 30px;
-}
-
-.stat-item {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 15px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-}
-
-.stat-number {
-  font-size: 24px;
-  font-weight: 600;
-  color: #3498db;
-}
-
-.stat-label {
-  font-size: 12px;
-  color: #7f8c8d;
-  margin-top: 5px;
-}
-
-.sites-list {
-  display: flex;
-  flex-direction: column;
-  gap: 15px;
-  margin-bottom: 30px;
-}
-
-.site-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  background: #f8f9fa;
-  border-radius: 8px;
-  border: 1px solid #e9ecef;
-  transition: box-shadow 0.3s ease;
-}
-
-.site-item:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-}
-
-.site-info {
-  display: flex;
-  align-items: center;
-  gap: 15px;
-  flex: 1;
-}
-
-.site-icon {
-  width: 48px;
-  height: 48px;
-  background: white;
-  border-radius: 8px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 1px solid #e9ecef;
-}
-
-.site-icon img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.site-details {
-  flex: 1;
-}
-
-.site-details h3 {
-  margin: 0 0 5px 0;
-  color: #2c3e50;
-  font-size: 16px;
-}
-
-.site-description {
-  margin: 0 0 5px 0;
-  color: #7f8c8d;
-  font-size: 14px;
-}
-
-.site-url {
-  color: #3498db;
-  text-decoration: none;
-  font-size: 13px;
-  display: block;
-  margin-bottom: 5px;
-}
-
-.site-url:hover {
-  text-decoration: underline;
-}
-
-.site-category {
-  display: inline-block;
-  background: #3498db;
-  color: white;
-  padding: 2px 8px;
-  border-radius: 12px;
-  font-size: 11px;
-  font-weight: 500;
-}
-
-.site-actions {
-  display: flex;
-  gap: 10px;
-}
-
-.edit-btn, .delete-btn {
-  padding: 6px 12px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 12px;
-  transition: all 0.3s ease;
-}
-
-.edit-btn {
-  background: #f39c12;
-  color: white;
-}
-
-.edit-btn:hover {
-  background: #e67e22;
-}
-
-.delete-btn {
-  background: #e74c3c;
-  color: white;
-}
-
-.delete-btn:hover {
-  background: #c0392b;
-}
-
-.pagination {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 20px;
-  padding: 20px 0;
-}
-
-.page-btn {
-  padding: 8px 16px;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.page-btn:hover:not(:disabled) {
-  background: #2980b9;
-}
-
-.page-btn:disabled {
-  background: #bdc3c7;
-  cursor: not-allowed;
-}
-
-.page-info {
-  color: #7f8c8d;
-  font-size: 14px;
-}
-
-/* 弹窗样式 */
-.modal-overlay {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 1000;
-}
-
-.modal-content {
-  background: white;
-  border-radius: 8px;
-  width: 90%;
-  max-width: 600px;
-  max-height: 90vh;
-  overflow-y: auto;
-}
-
-.modal-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 20px;
-  border-bottom: 1px solid #e9ecef;
-}
-
-.modal-header h3 {
-  margin: 0;
-  color: #2c3e50;
-}
-
-.close-btn {
-  background: none;
-  border: none;
-  font-size: 20px;
-  cursor: pointer;
-  color: #7f8c8d;
-  padding: 5px;
-  border-radius: 4px;
-  transition: background-color 0.3s ease;
-}
-
-.close-btn:hover {
-  background: #f8f9fa;
-}
-
-.site-form {
-  padding: 20px;
-}
-
-.form-row {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 15px;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-group label {
-  display: block;
-  margin-bottom: 8px;
-  color: #555;
-  font-weight: 500;
-}
-
-.form-input, .form-textarea {
-  width: 100%;
-  padding: 10px;
-  border: 2px solid #e1e1e1;
-  border-radius: 4px;
-  font-size: 14px;
-  transition: border-color 0.3s ease;
-}
-
-.form-input:focus, .form-textarea:focus {
-  outline: none;
-  border-color: #3498db;
-}
-
-.form-textarea {
-  resize: vertical;
-  font-family: inherit;
-}
-
-.icon-input-group {
-  display: flex;
-  gap: 10px;
-}
-
-.auto-icon-btn {
-  padding: 10px 15px;
-  background: #3498db;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 14px;
-  white-space: nowrap;
-  transition: background-color 0.3s ease;
-}
-
-.auto-icon-btn:hover {
-  background: #2980b9;
-}
-
-.auto-icon-btn:disabled {
-  opacity: 0.65;
-  cursor: wait;
-}
-
-.icon-status {
-  margin: 8px 0 0;
-  font-size: 13px;
-  color: #52616b;
-}
-
-.icon-preview {
-  margin-top: 10px;
-  padding: 10px;
-  background: #f8f9fa;
-  border-radius: 4px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.icon-preview img {
-  width: 32px;
-  height: 32px;
-  object-fit: contain;
-}
-
-.form-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  margin-top: 30px;
-  padding-top: 20px;
-  border-top: 1px solid #e9ecef;
-}
-
-.cancel-btn, .submit-btn {
-  padding: 10px 20px;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
-}
-
-.cancel-btn {
-  background: #95a5a6;
-  color: white;
-}
-
-.cancel-btn:hover {
-  background: #7f8c8d;
-}
-
-.submit-btn {
-  background: #27ae60;
-  color: white;
-}
-
-.submit-btn:hover {
-  background: #219a52;
-}
-
-/* 响应式设计 */
-@media (max-width: 768px) {
-  .manager-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .header-actions {
-    flex-wrap: wrap;
-    width: 100%;
-  }
-
-  .stats-bar {
-    grid-template-columns: repeat(auto-fit, minmax(100px, 1fr));
-  }
-
-  .site-item {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
-  }
-
-  .site-actions {
-    align-self: flex-end;
-  }
-
-  .form-row {
-    grid-template-columns: 1fr;
-  }
-
-  .icon-input-group {
-    flex-direction: column;
-  }
-}
-</style>
