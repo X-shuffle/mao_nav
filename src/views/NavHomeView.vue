@@ -1,5 +1,5 @@
 <template>
-  <div class="nav-home">
+  <div class="nav-home" :class="{ 'list-view': viewMode === 'list' }">
     <aside class="sidebar">
       <a class="brand" href="/" :aria-label="`${title || 'Navigation'} 首页`">
         <img src="/logo.png" alt="" width="38" height="38" />
@@ -8,6 +8,7 @@
       <nav class="category-nav" aria-label="分类导航">
         <p class="nav-label">分类导航 <span>{{ visibleCategories.length }}</span></p>
         <ul class="category-list">
+          <li v-if="pinnedSites.length && !isSearching"><a href="#category-favorites" class="category-link" :class="{ active: activeCategoryId === 'favorites' }" :aria-current="activeCategoryId === 'favorites' ? 'location' : undefined" @click.prevent="scrollToCategory('favorites')"><span class="category-emoji" aria-hidden="true">☆</span><span class="category-label">常用站点</span><span class="category-count">{{ pinnedSites.length }}</span></a></li>
           <li v-for="category in visibleCategories" :key="category.id">
             <a :href="`#category-${category.id}`" class="category-link"
               :class="{ active: activeCategoryId === category.id }"
@@ -58,10 +59,12 @@
         <div v-if="loading" class="page-state" role="status">正在加载站点…</div>
         <div v-else-if="error" class="page-state" role="alert"><p>{{ error }}</p><button class="primary-button" @click="fetchCategories">重新加载</button></div>
         <div v-else class="categories-container">
-          <div class="collection-summary" role="status" aria-live="polite" aria-atomic="true">
-            <p v-if="isSearching">找到 <strong>{{ visibleSiteCount }}</strong> 个站点 <span>· {{ visibleCategories.length }} 个分类</span></p>
+          <div class="collection-summary">
+            <p v-if="isSearching" role="status" aria-live="polite">找到 <strong>{{ visibleSiteCount }}</strong> 个站点 <span>· {{ visibleCategories.length }} 个分类</span></p>
             <p v-else>收藏的好去处 <span>· {{ totalSites }} 个站点</span></p>
-            <button v-if="isSearching" class="text-button" @click="clearSearch">显示全部</button>
+            <div class="collection-actions"><button v-if="isSearching" class="text-button" @click="clearSearch">显示全部</button>
+              <div class="view-switch" role="group" aria-label="站点显示方式"><button type="button" :aria-pressed="viewMode === 'cards'" @click="viewMode = 'cards'">卡片</button><button type="button" :aria-pressed="viewMode === 'list'" @click="viewMode = 'list'">列表</button></div>
+            </div>
           </div>
           <div v-if="!visibleCategories.length" class="empty-state">
             <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 4 4"/></svg>
@@ -69,18 +72,19 @@
             <p>{{ isSearching ? '试试更短的关键词，也可以切换搜索引擎到网上查找。' : '添加一些常用网站，让这里成为你的日常入口。' }}</p>
             <button v-if="isSearching" class="primary-button" @click="clearSearch">清空搜索</button>
           </div>
+          <p class="preference-status" role="status">{{ preferenceStatus }}</p>
+          <section v-if="pinnedSites.length && !isSearching" id="category-favorites" class="category-section favorites-section" aria-labelledby="heading-favorites">
+            <div class="category-heading"><h2 id="heading-favorites"><span aria-hidden="true">☆</span>常用站点</h2><span>{{ pinnedSites.length }} 个站点 · 本机收藏</span></div>
+            <div class="sites-grid"><SiteCard v-for="site in pinnedSites" :key="site.url" :site="site" favorite :compact="viewMode === 'list'" @toggle-favorite="toggleFavorite" /></div>
+          </section>
+          <p v-else-if="!isSearching && totalSites" class="favorite-hint">点击站点旁的 ☆，把常用网站放在这里。</p>
           <section v-for="category in visibleCategories" :id="`category-${category.id}`" :key="category.id" class="category-section" :aria-labelledby="`heading-${category.id}`">
             <div class="category-heading">
               <h2 :id="`heading-${category.id}`"><span aria-hidden="true">{{ category.icon }}</span>{{ category.name }}</h2>
               <span>{{ category.sites?.length || 0 }} 个站点</span>
             </div>
             <div class="sites-grid">
-              <a v-for="site in category.sites" :key="site.id" :href="site.url" target="_blank" rel="noopener noreferrer" class="site-card"
-                :title="[site.name, site.description, getSiteHost(site.url)].filter(Boolean).join(' · ')">
-                <SiteIcon :src="site.icon" :name="site.name" />
-                <div class="site-info"><h3>{{ site.name }}</h3><p>{{ site.description || getSiteHost(site.url) }}</p></div>
-                <svg class="site-arrow" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M7 17 17 7M7 7h10v10"/></svg>
-              </a>
+              <SiteCard v-for="site in category.sites" :key="site.id" :site="site" :favorite="favoriteSet.has(site.url)" :compact="viewMode === 'list'" @toggle-favorite="toggleFavorite" />
             </div>
             <p v-if="!category.sites?.length" class="category-empty">这个分类还没有站点</p>
           </section>
@@ -91,7 +95,9 @@
 
     <dialog id="mobile-categories" ref="menuDialog" class="mobile-menu" aria-labelledby="mobile-menu-title" @close="showMobileMenu = false" @cancel="showMobileMenu = false" @click="handleDialogClick">
       <div class="mobile-menu-header"><h2 id="mobile-menu-title">分类导航</h2><button type="button" aria-label="关闭分类导航" @click="closeMobileMenu">×</button></div>
-      <nav aria-label="手机分类导航"><ul class="category-list"><li v-for="category in visibleCategories" :key="category.id">
+      <nav aria-label="手机分类导航"><ul class="category-list">
+        <li v-if="pinnedSites.length && !isSearching"><a href="#category-favorites" class="category-link" :class="{ active: activeCategoryId === 'favorites' }" :aria-current="activeCategoryId === 'favorites' ? 'location' : undefined" @click.prevent="scrollToCategoryMobile('favorites')"><span class="category-emoji" aria-hidden="true">☆</span><span class="category-label">常用站点</span><span class="category-count">{{ pinnedSites.length }}</span></a></li>
+        <li v-for="category in visibleCategories" :key="category.id">
         <a :href="`#category-${category.id}`" class="category-link" :class="{ active: activeCategoryId === category.id }"
           :aria-current="activeCategoryId === category.id ? 'location' : undefined" @click.prevent="scrollToCategoryMobile(category.id)">
           <span class="category-emoji" aria-hidden="true">{{ category.icon }}</span><span class="category-label">{{ category.name }}</span><span class="category-count">{{ category.sites?.length || 0 }}</span>
@@ -104,14 +110,44 @@
 <script setup>
 import { computed, nextTick, onMounted, onUnmounted, ref, watch } from 'vue'
 import { useNavigation } from '@/apis/useNavigation.js'
-import { filterCategories, getSiteHost } from '@/apis/navigationSearch.js'
-import SiteIcon from '@/components/SiteIcon.vue'
+import { filterCategories } from '@/apis/navigationSearch.js'
+import SiteCard from '@/components/SiteCard.vue'
+import { PREFERENCES_KEY, readPreferences, savePreferences } from '@/apis/navigationPreferences.js'
 import googleLogo from '@/assets/goolge.png'
 import baiduLogo from '@/assets/baidu.png'
 import bingLogo from '@/assets/bing.png'
 import duckLogo from '@/assets/duck.png'
 
 const { categories, title, loading, error, fetchCategories } = useNavigation()
+const loadPreferences = () => {
+  try { return readPreferences(window.localStorage) }
+  catch { return { favoriteUrls: [], viewMode: 'cards' } }
+}
+const initialPreferences = loadPreferences()
+const favoriteUrls = ref(initialPreferences.favoriteUrls)
+const viewMode = ref(initialPreferences.viewMode)
+const preferenceStatus = ref('')
+const favoriteSet = computed(() => new Set(favoriteUrls.value))
+const pinnedSites = computed(() => {
+  const sites = new Map(categories.value.flatMap(category => category.sites || []).map(site => [site.url, site]))
+  return favoriteUrls.value.map(url => sites.get(url)).filter(Boolean)
+})
+const toggleFavorite = (url) => {
+  const removed = favoriteSet.value.has(url)
+  favoriteUrls.value = removed ? favoriteUrls.value.filter(value => value !== url) : [...favoriteUrls.value, url]
+  preferenceStatus.value = removed ? '已从常用站点移除' : '已添加到常用站点'
+}
+watch([favoriteUrls, viewMode], () => {
+  try {
+    if (!savePreferences(window.localStorage, { favoriteUrls: favoriteUrls.value, viewMode: viewMode.value })) preferenceStatus.value = '浏览器无法保存偏好，本次设置仍可使用'
+  } catch { preferenceStatus.value = '浏览器无法保存偏好，本次设置仍可使用' }
+})
+const syncPreferences = (event) => {
+  if (event.key !== PREFERENCES_KEY && event.key !== null) return
+  const preferences = loadPreferences()
+  favoriteUrls.value = preferences.favoriteUrls
+  viewMode.value = preferences.viewMode
+}
 const searchQuery = ref('')
 const selectedEngine = ref('local')
 const activeCategoryId = ref('')
@@ -185,13 +221,16 @@ watch(visibleCategories, async () => {
   contentArea.value?.scrollTo({ top: 0, behavior: 'instant' })
   updateActiveCategory()
 })
+watch([viewMode, pinnedSites], async () => { await nextTick(); scheduleActiveCategory() })
 onMounted(() => {
   fetchCategories()
+  window.addEventListener('storage', syncPreferences)
   window.addEventListener('keydown', handleKeyboard)
   window.addEventListener('resize', handleResize)
 })
 onUnmounted(() => {
   cancelAnimationFrame(scrollFrame)
+  window.removeEventListener('storage', syncPreferences)
   window.removeEventListener('keydown', handleKeyboard)
   window.removeEventListener('resize', handleResize)
 })
@@ -248,6 +287,13 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .content-area { flex: 1; min-height: 0; overflow-y: auto; padding: 24px 32px 40px; }
 .categories-container { max-width: 1200px; margin: 0 auto; }
 .collection-summary { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 24px; font-size: 13px; color: var(--nav-muted); }
+.collection-actions { display: flex; align-items: center; gap: 14px; flex-shrink: 0; }
+.view-switch { display: flex; padding: 3px; background: #e9eef5; border-radius: 7px; }
+.view-switch button { padding: 5px 10px; border: none; background: transparent; color: var(--nav-muted); border-radius: 5px; cursor: pointer; font-size: 12px; }
+.view-switch button[aria-pressed="true"] { background: #fff; color: var(--nav-accent); font-weight: 600; }
+.favorite-hint { margin: -10px 0 24px; font-size: 12px; color: var(--nav-muted); }
+.preference-status { position: absolute; width: 1px; height: 1px; padding: 0; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.list-view .sites-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .collection-summary strong { font-weight: 600; color: var(--nav-ink); }
 .collection-summary span { margin-left: 4px; }
 .category-section { margin-bottom: 32px; }
@@ -256,13 +302,6 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
 .category-heading h2 span { font-size: 21px; }
 .category-heading > span { flex-shrink: 0; font-size: 12px; color: var(--nav-muted); }
 .sites-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(min(100%, 240px), 1fr)); gap: 12px; }
-.site-card { display: flex; align-items: center; gap: 12px; min-width: 0; min-height: 88px; padding: 14px; border: 1px solid var(--nav-line); border-radius: 10px; background: #fff; color: inherit; text-decoration: none; transition: border-color 160ms ease, background-color 160ms ease; }
-.site-card:hover { border-color: #91b6df; background: #f9fbfe; }
-.site-info { flex: 1; min-width: 0; }
-.site-info h3 { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; font-weight: 600; line-height: 1.5; }
-.site-info p { margin-top: 3px; color: var(--nav-muted); font-size: 12px; line-height: 1.5; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow-wrap: anywhere; }
-.site-arrow { flex-shrink: 0; color: #657890; opacity: 0; transition: opacity 160ms ease; }
-.site-card:hover .site-arrow, .site-card:focus-visible .site-arrow { opacity: 1; }
 .category-empty { padding: 20px 0; color: var(--nav-muted); font-size: 14px; }
 .collection-end { margin-top: 40px; color: var(--nav-muted); text-align: center; font-size: 12px; }
 .page-state, .empty-state { display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 14px; min-height: 320px; text-align: center; color: var(--nav-muted); }
@@ -287,20 +326,16 @@ a:focus-visible, button:focus-visible, select:focus-visible { outline: 2px solid
   .search-shortcut { display: none; }
   .mobile-menu-btn { display: grid; place-items: center; width: 40px; height: 40px; flex-shrink: 0; border: none; border-radius: 8px; background: #edf3fa; color: var(--nav-ink); cursor: pointer; }
   .content-area { padding: 20px 16px 32px; }
-  .collection-summary { margin-bottom: 22px; font-size: 12px; }
+  .collection-summary { margin-bottom: 22px; font-size: 12px; flex-wrap: wrap; }
+  .collection-actions { gap: 10px; }
+  .list-view .sites-grid { grid-template-columns: 1fr; }
   .category-heading h2 { font-size: 18px; }
   .category-heading > span { font-size: 11px; }
   .sites-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .site-card { flex-direction: column; align-items: flex-start; gap: 10px; padding: 14px; min-height: 132px; }
-  .site-info { width: 100%; }
-  .site-info h3 { font-size: 14px; }
-  .site-info p { font-size: 12px; }
-  .site-arrow { display: none; }
   .category-section { margin-bottom: 28px; }
 }
 @media (max-width: 360px) {
   .content-area { padding-right: 12px; padding-left: 12px; }
-  .site-card { padding: 12px; }
   .search-header { padding-right: 12px; padding-left: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
