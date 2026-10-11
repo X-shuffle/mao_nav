@@ -157,7 +157,7 @@
           <ol>
             <li>访问 <a href="https://github.com/settings/tokens" target="_blank" rel="noopener noreferrer">GitHub Settings → Developer settings → Personal access tokens</a></li>
             <li>点击 "Generate new token" → "Generate new token (fine-grained token)"</li>
-            <li>设置 Token 名称，选择过期时间,仓库只选择mao_nav 防止token 泄露影响自己其他工程</li>
+            <li>设置 Token 名称和过期时间，仓库仅选择 X-shuffle/mao_nav</li>
             <li>
               <strong>在 <span style="color:#3498db">Repository permissions (仓库权限)</span> 部分，勾选以下权限：</strong>
               <ul>
@@ -195,10 +195,10 @@ VITE_ADMIN_PASSWORD=your_admin_password_here
 
 # GitHub Token
 VITE_GITHUB_TOKEN=your_github_token_here
-# Github 仓库所有者
-VITE_GITHUB_OWNER=your_github_owner_here
-VITE_GITHUB_REPO=your_github_repo_here
-VITE_GITHUB_BRANCH=your_github_branch_here</code></pre>
+# 本仓库：X-shuffle/mao_nav，生产分支：master
+VITE_GITHUB_OWNER=X-shuffle
+VITE_GITHUB_REPO=mao_nav
+VITE_GITHUB_BRANCH=master</code></pre>
           </div>
         </div>
 

@@ -2,6 +2,8 @@
 
 > 一个简洁美观的个人导航网站，支持分类管理和自定义收藏夹
 
+项目仓库：[X-shuffle/mao_nav](https://github.com/X-shuffle/mao_nav) · 生产分支：`master` · 在线访问：[nv.x-shuffle.com](https://nv.x-shuffle.com/)
+
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![Vue](https://img.shields.io/badge/Vue-3.5.17-4FC08D?logo=vue.js)](https://vuejs.org/)
 [![Vite](https://img.shields.io/badge/Vite-5.4.10-646CFF?logo=vite)](https://vitejs.dev/)
@@ -22,16 +24,16 @@
 
 ### 🚀 部署到 Cloudflare（推荐）
 
-**1. Fork 本项目**
-- 点击页面右上角的 **"Fork"** 按钮
-- 将项目 Fork 到你的 GitHub 账号下
+**1. 选择本仓库**
+- 仓库：[X-shuffle/mao_nav](https://github.com/X-shuffle/mao_nav)
+- 生产分支：`master`
 
 **2. 在 Cloudflare Pages 控制台部署**
 1. 访问 [Cloudflare Dashboard](https://dash.cloudflare.com)
 2. 注册/登录 Cloudflare 账号（免费）
 3. 点击左侧菜单 **"Workers & Pages"**
 4. 点击 **"Create application"** → **"Pages"** → **"Connect to Git"**
-5. 授权 GitHub 并选择你 Fork 的 `mao_nav` 仓库
+5. 授权 GitHub 并选择 `X-shuffle/mao_nav` 仓库，生产分支设为 `master`
 6. 配置构建设置：
    - **Framework preset**: `Vue`
    - **Build command**: `npm run build`
@@ -53,14 +55,15 @@
 
 ### 🚀 部署到 Vercel
 
-**1. Fork 本项目**
-- 同上，先 Fork 到你的 GitHub 账号
+**1. 选择本仓库**
+- 仓库：[X-shuffle/mao_nav](https://github.com/X-shuffle/mao_nav)
+- 生产分支：`master`
 
 **2. 在 Vercel 控制台部署**
 1. 访问 [Vercel 官网](https://vercel.com/)
 2. 注册/登录 Vercel 账号（免费）
 3. 点击右上角 **"Add New"** → **"Project"**
-4. 选择你 Fork 的 `mao_nav` 仓库，点击 **"Import"**
+4. 选择 `X-shuffle/mao_nav` 仓库，点击 **"Import"**
 5. 保持默认设置，Vercel 会自动检测到是 Vue 项目
    - **Framework Preset**: `Vite`
    - **Build Command**: `npm run build`
@@ -86,7 +89,7 @@
 
 1. 访问 [GitHub Settings → Developer settings → Personal access tokens](https://github.com/settings/tokens)
 2. 点击 "Generate new token" → "Generate new token (fine-grained token)"
-3. 设置 Token 名称，选择过期时间，并**只选择你的 mao_nav 仓库**（这样即使 token 泄露也不会影响你其他项目）
+3. 设置 Token 名称，选择过期时间，并**仅选择 X-shuffle/mao_nav 仓库**
 4. 在 **Repository permissions (仓库权限)** 部分，勾选以下权限：
    - `Contents` - **Read and write** ✅  
      <span style="color:#888;font-size:13px;">用于读取和修改 <code>src/mock/mock_data.js</code> 文件，这是管理系统的核心功能</span>
@@ -110,10 +113,10 @@ VITE_ADMIN_PASSWORD=your_admin_password_here
 
 # GitHub Token
 VITE_GITHUB_TOKEN=your_github_token_here
-# Github 仓库所有者
-VITE_GITHUB_OWNER=your_github_owner_here
-VITE_GITHUB_REPO=your_github_repo_here
-VITE_GITHUB_BRANCH=your_github_branch_here
+# 本仓库：X-shuffle/mao_nav，生产分支：master
+VITE_GITHUB_OWNER=X-shuffle
+VITE_GITHUB_REPO=mao_nav
+VITE_GITHUB_BRANCH=master
 ```
 
 
@@ -121,7 +124,7 @@ VITE_GITHUB_BRANCH=your_github_branch_here
 
 1. **克隆项目**
 ```bash
-git clone https://github.com/your-username/mao_nav.git
+git clone https://github.com/X-shuffle/mao_nav.git
 cd mao_nav
 ```
 
@@ -192,7 +195,7 @@ export const mockData = {
 **方式2：使用管理员界面（可选）**
 如果你配置了管理员界面（见上方配置说明），可以通过以下步骤可视化管理：
 
-1. 访问 `http://localhost:5173/admin` 或 `https://your-domain.com/admin`
+1. 访问 `http://localhost:5173/admin` 或 `https://nv.x-shuffle.com/admin`
 2. 输入管理员密钥登录
 3. 在界面中添加、编辑或删除分类和网站
 4. 点击"保存到GitHub"按钮保存更改
@@ -235,7 +238,7 @@ npm run lint
 
 欢迎提交 Issue 和 Pull Request！
 
-1. Fork 本项目
+1. Fork [X-shuffle/mao_nav](https://github.com/X-shuffle/mao_nav)
 2. 创建你的特性分支 (`git checkout -b feature/AmazingFeature`)
 3. 提交你的修改 (`git commit -m 'Add some AmazingFeature'`)
 4. 推送到分支 (`git push origin feature/AmazingFeature`)
@@ -256,8 +259,8 @@ npm run lint
 
 如果你有任何问题或建议，欢迎通过以下方式联系：
 
-- 提交 [Issue](https://github.com/your-username/mao_nav/issues)
-- 发起 [Discussion](https://github.com/your-username/mao_nav/discussions)
+- 提交 [Issue](https://github.com/X-shuffle/mao_nav/issues)
+- 发起 [Discussion](https://github.com/X-shuffle/mao_nav/discussions)
 
 ---
 
