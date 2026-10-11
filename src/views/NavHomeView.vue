@@ -1,9 +1,9 @@
 <template>
   <div class="nav-home">
     <aside class="sidebar">
-      <a class="brand" href="/" :aria-label="`${title || '猫猫导航'} 首页`">
+      <a class="brand" href="/" :aria-label="`${title || 'Navigation'} 首页`">
         <img src="/logo.png" alt="" width="38" height="38" />
-        <h1>{{ title || '猫猫导航' }}</h1>
+        <h1>{{ title || 'Navigation' }}</h1>
       </a>
       <nav class="category-nav" aria-label="分类导航">
         <p class="nav-label">分类导航 <span>{{ visibleCategories.length }}</span></p>
@@ -84,7 +84,7 @@
             </div>
             <p v-if="!category.sites?.length" class="category-empty">这个分类还没有站点</p>
           </section>
-          <p v-if="visibleCategories.length" class="collection-end">{{ title || '猫猫导航' }} · 发现值得收藏的网站</p>
+          <p v-if="visibleCategories.length" class="collection-end">{{ title || 'Navigation' }} · 发现值得收藏的网站</p>
         </div>
       </div>
     </main>
