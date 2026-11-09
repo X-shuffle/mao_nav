@@ -54,6 +54,13 @@ export const mockData = {
           "url": "https://blog.x-shuffle.com",
           "description": "",
           "icon": "/sitelogo/xueqiu.com.ico"
+        },
+        {
+          "id": "site-1794241820328",
+          "name": "近邻",
+          "url": "https://nearby.x-shuffle.com/",
+          "description": "文件直达，聊在身边",
+          "icon": "https://icons.duckduckgo.com/ip3/nearby.x-shuffle.com.ico"
         }
       ]
     },
