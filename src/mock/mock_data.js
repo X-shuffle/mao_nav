@@ -747,6 +747,13 @@ export const mockData = {
           "url": "https://www.xn--74qz10cqsltibh40akss.com/",
           "description": "观影",
           "icon": "/sitelogo/www.gying.in.ico"
+        },
+        {
+          "id": "site-1794404034556",
+          "name": "电影",
+          "url": "https://m.dian115.com/",
+          "description": "",
+          "icon": "https://m.dian115.com/favicon.ico"
         }
       ]
     },
